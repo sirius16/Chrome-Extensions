@@ -1,0 +1,21 @@
+{
+	// Required
+	"manifest_version" : 2,
+	"name" : "jQuery Loader",
+	"icons": {
+        "128": "android-chrome-192x192.png"
+    },
+	"version" : "1.0",
+
+	"content_scripts" : [{
+			"matches" : ["<all_urls>"],
+			"exclude_matches" : ["*://disqus.com/*"],
+			"js" : ["jQuery.js","background.js"],
+			"css" : ["jquery-ui.min.css"]
+		}
+	],
+
+	"permissions" : ["<all_urls>", "tabs"],
+	
+	"web_accessible_resources" : ["jQuery.js","script.js","jquery-ui.min.css","jquery-ui.min.js"]
+}

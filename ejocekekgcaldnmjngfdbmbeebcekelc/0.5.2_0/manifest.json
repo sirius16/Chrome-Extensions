@@ -1,0 +1,45 @@
+{
+   "author": "Fried Cookie Software",
+   "background": {
+      "page": "/background.html",
+      "persistent": true
+   },
+   "chrome_url_overrides": {
+      "newtab": "/newtab.html"
+   },
+   "content_scripts": [ {
+      "js": [ "/js/bootstrap.js" ],
+      "matches": [ "http://*/*", "https://*/*" ],
+      "run_at": "document_start"
+   }, {
+      "css": [ "/css/opentab_global.css" ],
+      "js": [ "/lib/utils.js", "/lib/angular.min.js", "/lib/angular-route.min.js", "/lib/jquery-2.1.1.min.js", "/lib/lodash.underscore.min.js", "/lib/mixins.loadash.js", "/lib/moment-with-langs.min.js", "/js/opentab.js" ],
+      "matches": [ "http://*/*", "https://*/*" ],
+      "run_at": "document_idle"
+   } ],
+   "content_security_policy": "script-src 'self' 'unsafe-eval' https://s3.amazonaws.com https://stats.g.doubleclick.net https://*.google-analytics.com https://*.uservoice.com https://maps.googleapis.com https://maps.gstatic.com; object-src  'self' ",
+   "default_locale": "en",
+   "description": "Give your homepage cool designs & awesome features - speed dial your favorites sites, text message from your computer, discover…",
+   "icons": {
+      "128": "/img/icons/128.png",
+      "16": "/img/icons/16.png",
+      "48": "/img/icons/48.png"
+   },
+   "manifest_version": 2,
+   "minimum_chrome_version": "23",
+   "name": "SPOTS - A better way to start",
+   "page_action": {
+      "default_icon": {
+         "19": "/img/icons/pageAction/19x19.png",
+         "38": "/img/icons/pageAction/38x38.png"
+      },
+      "default_title": ""
+   },
+   "permissions": [ "notifications", "storage", "unlimitedStorage", "contextMenus", "webNavigation", "history", "bookmarks", "tabs", "management", "topSites", "cookies", "webRequest", "webRequestBlocking", "chrome://favicon/", "\u003Call_urls>" ],
+   "sandbox": {
+      "pages": [  ]
+   },
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "0.5.2",
+   "web_accessible_resources": [ "/lib/*", "/img/*", "/app/css/*", "/app/spots/*/images/*", "/css/fonts/*.otf", "/opentab.html", "css/opentab.css", "/app/spots/gallery/images/*" ]
+}

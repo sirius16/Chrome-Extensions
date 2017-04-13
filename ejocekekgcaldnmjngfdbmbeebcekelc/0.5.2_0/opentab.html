@@ -1,0 +1,501 @@
+<script type="text/ng-template" id="/app/spots/apps/opentab/partials/AppsGrabOpentab.html"><div ng-show="apps.length  && !searchOpen && config.appsDisplayed" class="appGrab" ng-controller="OpentabAppsHandleCtrl" ng-mousedown="startDragAppsHandle($event)" ng-mouseenter="iconEnter()" ng-mouseleave="iconLeave()" ng-click="stopPropagation($event)">
+
+
+    <div class="header" ng-style="{'background-color':config.themeColor }" ng-class="{'opened': openMode}">
+        <div class="android-icon-wrapper" ng-click="openApps($event)">
+            <div class="android-icon"></div>
+        </div>
+
+        <div class="text">{{i18n.Android_apps_found_on_this_page + ':'}}</div>
+        <div ng-click="openCloseView($event)" class="close-all"></div>
+        <div ng-click="closeApps()" class="minimize"></div>
+    </div>
+
+
+    <div class="apps" ng-class="{'showing' : showApps}" ng-show="!closeView">
+
+        <!-- apps -->
+        <div class="appGrabItem" ng-repeat="app in apps | limitTo:opentabNumAppsDisplayed" ng-click="appClick(app.id)">
+
+
+            <img ng-class="{'opened': openMode}" class="img" ng-src="{{ app.image }}">
+
+            <div ng-style="{'background-color':themeColor}" class="install-info installing" ng-show="installationList[app.id]==1">{{i18n.installing_application+'...'}}</div>
+            <div class="install-info" ng-show="installationList[app.id]==2">{{i18n.app_will_be_installed}}</div>
+            <div class="install-info" ng-show="installationList[app.id]==-1">{{i18n.installation_failed}}</div>
+
+            <div ng-show="!installationList[app.id]" class="app-details">
+                <div class="left middle">
+                    <div class="title">{{ app.name }}</div>
+                    <div class="rating">
+                        <span class="price">{{i18n.free}}</span>
+                        <span ng-repeat="i in [1,2,3,4,5]" class="star" ng-class="{full:$index < app.rating}"></span>
+                    </div>
+                </div>
+                <div ng-style="{'background-color' : config.themeColor}" ng-click="installApp(app.id, app.name,app.image,$event)" class="install-btn"></div>
+
+                <div class="close-app" ng-click="hideApp(app.id,$event)"></div>
+
+            </div>
+
+        </div>
+        <!-- toggle hidden -->
+        <div ng-show="hiddenApps.length">
+            <div ng-show="!showHidden && openMode" ng-click="showHidden=true" class="hidden-apps-btn">{{i18n.show_hidden_apps}}</div>
+            <div ng-show="showHidden && openMode" ng-click="showHidden=false" class="hidden-apps-btn">{{i18n.hide_hidden_apps}}</div>
+        </div>
+
+        <!-- hidden apps -->
+        <div ng-show="showHidden">
+            <div class="appGrabItem" ng-repeat="app in hiddenApps | limitTo:opentabNumAppsDisplayed" ng-click="appClick(app.id)" ng-class="{'app-picking' : showApps}">
+
+
+                <img ng-class="{'opened': openMode}" class="img" ng-src="{{ app.image }}">
+
+
+                <div ng-style="{'background-color':themeColor}" class="install-info installing" ng-show="installationList[app.id]==1">{{i18n.installing_application}}</div>
+                <div class="install-info" ng-show="installationList[app.id]==2">{{i18n.app_will_be_installed}}</div>
+                <div class="install-info" ng-show="installationList[app.id]==-1">{{i18n.installation_failed}}</div>
+
+                <div ng-show="!installationList[app.id]" class="app-details">
+                    <div class="left middle">
+                        <div class="title">{{ app.name }}</div>
+                        <div class="rating">
+                            <span class="price">free</span>
+                            <span ng-repeat="i in [1,2,3,4,5]" class="star" ng-class="{full:$index < app.rating}"></span>
+                        </div>
+                    </div>
+                    <div ng-style="{'background-color' : config.themeColor}" ng-click="installApp(app.id, app.name,app.image,$event)" class="install-btn"></div>
+                    <div class="close-app" ng-click="hideApp(app.id,$event)"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="close-view" ng-show="closeView">
+        <div class="title">{{i18n.Hide_All_Android_Insights}}</div>
+
+
+        <div class="radio">
+            <div>
+                <input ng-model="isDomain" ng-style="{'background-color': config.themeColor}" id="this" type="radio" checked="checked" name="hide" value="false">
+                <label for="this">{{i18n.on_this_page}}</label>
+            </div>
+
+            <div>
+                <input ng-model="isDomain" ng-style="{'background-color': config.themeColor}" id="all" type="radio" name="hide" value="true">
+                <label for="all">{{i18n.on_this_domain}}</label>
+            </div>
+        </div>
+
+        <div class="bottom">
+            <div ng-click="cancel()">{{i18n.cancel}}</div>
+            <div class="second" ng-click="hideAllApps(isDomain)">{{i18n.save}}</div>
+        </div>
+
+    </div>
+</div></script><script type="text/ng-template" id="/app/opentab/partials/notifications/DefaultNotification.html"><div ng-controller="DefaultNotificationOpentabCtrl">
+    {{ notification }}
+</div></script><script type="text/ng-template" id="/app/spots/favorites/opentab/partials/FavoritesOpentabAdd.html"><div ng-controller="FavoritesOpentabAddCtrl" class="favorites-spot">
+    <form class="add-favorite" ng-submit="addFavorite()">
+        <div class="title">
+            <span ng-style="{ 'color': config.themeColor }">{{i18n.add_to_your_favorites}}</span>
+            <div class="close-btn" ng-style="{ 'background-color': config.themeColor }" ng-click="closePart('topRight')"></div>
+        </div>
+        <div class="top">
+            <div class="card">
+                <spot item="item" size="70"></spot>
+                <div>
+                    <div class="card-title">{{item.title ? item.title : ''}}</div>
+                    <div class="card-url">{{item.url || "" | cleanURL }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="details">
+                <div class="category">
+                    <label>{{i18n.title}}</label>
+                    <input type="text" ng-model="item.title" placeholder="{{item.placeholder}}" ng-disabled="disableForm">
+                </div>
+                <div class="category">
+                    <label>{{i18n.category}}</label>
+                    <select ng-model="itemCategory" ng-options="category.id as category.name for category in categories" ng-disabled="disableForm"></select>
+                </div>
+                <div ng-if="config.user" class="category">
+                    <label>{{i18n['image_icon']}}</label>
+                    <span is-opentab="true" item="item" class="upload" file-upload="" max-size="'3MB'" folder="'icons'" max-width="280"
+                          partial="paths.app + '/opentab/partials/components/favoritesImageUpload.html'"/>
+                </div>
+                <div class="category colors-cat">
+                    <label>{{i18n.icon_background_color}}</label>
+                    <color-picker ng-model="item.color" color-scheme="favorites" add-colors="colorPalette"></color-picker>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <input type="button" value="{{i18n.cancel}}" class="btn cancel" ng-click="closePart('topRight')">
+            <input ng-click="addFavorite()" type="button" value="{{i18n.save}}" ng-style="{ 'background-color': config.themeColor }" ng-disabled="disableForm" class="btn">
+        </div>
+    </form>
+</div></script><script type="text/ng-template" id="/app/spots/favorites/opentab/partials/FavoritesOpentabRemove.html"><div ng-controller="FavoritesOpentabRemoveCtrl" class="favorites-spot">
+    <form class="add-favorite" ng-submit="removeFavorite()">
+        <div class="title">
+            <div class="circle" ng-style="{ 'background-color': item.color, 'background-image': backgroundImage(item.icon) }">
+                <span class="circle-cell">
+                    <span ng-if="!item.icon" class="letter">{{ item | spotIconLetters }}</span>
+                </span>
+            </div>
+            <span>{{i18n.remove_from_favorites}}</span>
+            <!-- <div class="close-btn" ng-style="{ 'background-color': config.themeColor }" ng-click="closePart('topRight')"></div> -->
+        </div>
+        <div class="footer">
+            <input type="submit" value="{{i18n.remove}}" ng-style="{ 'background-color': config.themeColor }">
+            <input type="button" value="{{i18n.cancel}}" ng-click="closePart('topRight');">
+        </div>
+    </form>
+</div></script><script type="text/ng-template" id="/app/spots/weather/opentab/partials/OpentabClock.html"><div ng-controller="OpentabClockCtrl" class="clock">
+    <div class="hour">{{ currentTime | date:config.clockHourFormat}}</div>
+    <span ng-if="config.clockHourFormat== 'h:mm'">{{currentTime | date:'a'}}</span>
+    <div class="date">
+        {{ currentTime | dayOfWeek }}<br>
+        {{ currentTime | formatDate }}
+    </div>
+</div></script><script type="text/ng-template" id="/app/spots/phone/opentab/partials/OpentabContactSearchResult.html"><div ng-model="result" class="result-wrapper newtab-contacts-search-result" ng-controller="OpentabContactsSearchResultCtrl">
+    <!-- Default search view - START -->
+    <div class="default" ng-show="currentView == 'default'" ng-click="toggleContact()">
+        <!-- Contact Image -->
+        <contact contact="result" theme-color="true" hide-name="true"></contact>
+
+        <!-- Contact Name -->
+        <span class="text">{{ result.display }}</span>
+
+        <!-- Buttons -->
+        <img ng-src="{{ paths.img + '/phone/sms-black.svg' }}" class="btn" ng-click="openChat(defaultPhone,result,'search')" ng-mouseenter="disableToggle = true" ng-mouseout="disableToggle = false">
+        <img ng-src="{{ paths.img + '/phone/search-call-black.svg' }}" class="btn" ng-click="callNumber(defaultPhone)" ng-mouseenter="disableToggle = true" ng-mouseout="disableToggle = false">
+    </div>
+    <!-- Default search view - END -->
+
+
+    <!-- Open Contact search view - START -->
+    <div class="open-contact" ng-show="currentView == 'all_numbers'">
+        <div class="default">
+            <!-- Contact Image -->
+            <contact contact="result" theme-color="true" hide-name="true"></contact>
+
+            <!-- Contact Name -->
+            <div class="text" ng-click="toggleContact()">{{ result.display }}</div>
+        </div>
+
+        <div class="numbers">
+            <div class="number" ng-repeat="(type, number) in result.phones track by $index">
+                <span class="text">{{ number | normalizePhoneNumber }}</span>
+
+                <!-- Buttons -->
+                <img ng-src="{{ paths.img + '/phone/sms-black.svg' }}" class="btn" ng-click="openChat(defaultPhone,result,'search')">
+                <img ng-src="{{ paths.img + '/phone/search-call-black.svg' }}" class="btn" ng-click="callNumber(defaultPhone)">
+            </div>
+        </div>
+    </div>
+    <!-- Open Contact search view - END -->
+
+
+    <!-- Calling / Connected - START -->
+    <div class="default calling" ng-show="currentView == 'calling' || currentView == 'call_connected'" ng-class="{animated:currentView == 'calling'}" ng-style="{ background: config.themeColor }">
+        <!-- Contact Image -->
+        <contact contact="result" hide-name="true"></contact>
+
+        <!-- Contact Name -->
+        <span ng-show="currentView == 'calling'" class="text">
+            <span>{{i18n.calling}}</span>
+            {{result.givenName}}...
+        </span>
+        <span ng-show="currentView == 'call_connected'" class="text">{{i18n.you_are_now_connected}}</span>
+
+        <!-- Buttons -->
+        <img ng-src="{{paths.img + '/phone/hangup.svg'}}" class="btn" ng-click="cancelCall()">
+    </div>
+    <!-- Calling Connected - END -->
+</div></script><script type="text/ng-template" id="/app/spots/favorites/opentab/partials/OpentabFavoritesSearchResult.html"><div ng-model="result" class="result-wrapper newtab-favorites-search-result" ng-controller="OpentabFavoritesSearchResultCtrl" ng-click="resultClick()">
+    <!-- Favorites search result - START -->
+    <a ng-if="spot.type == 'favorites'" class="favorites">
+        <spot class="icon" opentab="true" item="result" size="36"></spot>
+        <span class="title">{{ result.title }}</span>
+    </a>
+    <!-- Favorites search result - END -->
+
+    <!-- Top Sites search result - START -->
+    <a ng-if="spot.type == 'top-sites'" class="top-sites">
+        <spot class="icon" opentab="true" item="result" size="36"></spot>
+        <span class="title">{{ result.title }}</span>
+    </a>
+    <!-- Top Sites search result - END -->
+
+    <!-- Chrome Apps search result - START -->
+    <a ng-if="spot.type == 'chrome-apps'" class="chrome-apps">
+        <img class="icon app" ng-src="{{ result.icon }}" />
+        <span class="title">{{ result.name }}</span>
+    </a>
+    <!-- Chrome Apps search result - END -->
+
+    <!-- Bookmarks search result - START -->
+    <a ng-if="spot.type == 'bookmarks'" class="bookmarks">
+        <img class="icon" ng-src="{{ paths.img + '/search/bookmark-icon-black.png' }}" />
+        <span class="title">{{ result.title }}</span>
+    </a>
+    <!-- Bookmarks search result - END -->
+</div></script><script type="text/ng-template" id="/app/spots/search/opentab/partials/OpentabSearchResult.html"><div ng-model="result" class="result-wrapper newtab-search-result" ng-controller="OpentabSearchResultCtrl" ng-click="resultClick()">
+    <!-- Calculator search result - START -->
+    <a ng-if="result.type == 'calculator'" class="calculator">
+        <img class="icon" ng-src="{{ paths.img + '/search/calculator-icon-black.png' }}">
+        <span class="title">{{ result.label }}</span>
+    </a>
+    <!-- Calculator search result - END -->
+
+    <!-- Navigation search result - START -->
+    <a ng-if="result.type == 'navigation'" class="navigation">
+        <img class="icon" ng-src="{{ paths.img + '/search/navigation-icon-black.png' }}">
+        <span class="title">{{ result.label }}</span>
+    </a>
+    <!-- Navigation search result - END -->
+
+    <!-- Web search result - START -->
+    <a ng-if="result.type == 'web'" class="web">
+        <img class="icon" ng-src="{{ paths.img + '/search/web-result-icon-black.png' }}">
+        <span class="title">{{ result.label }}</span>
+    </a>
+    <!-- Web search result - END -->
+
+    <!-- Default search result - START -->
+    <a ng-if="result.type == 'web-default'" class="web default">
+        <img class="icon" ng-src="{{ paths.img + '/search/web-result-icon-black.png' }}">
+        <span class="title">
+            <span>{{i18n.search_for}}</span>:
+            <span class="search-term">{{ result.label }}</span>
+        </span>
+    </a>
+    <!-- Default search result - END -->
+</div></script><script type="text/ng-template" id="/app/spots/weather/opentab/partials/OpentabWeather.html"><div ng-controller="opentabWeatherCtrl" class="weather">
+    <div ng-show="weatherLoaded === true">
+        <div class="weather-condition">
+            <div class="weather-temperature">{{ temperature | tempetureUnit }}</div>
+            <div class="weather-condition-text">{{ weatherConditionText }}</div>
+        </div>
+        <div class="weather-icon" ng-class="'weather-icon-' + weatherConditionId"></div>
+    </div>
+    <div class="weather-loader" ng-show="weatherLoaded === false">
+        <span>{{i18n[unavailable ? 'unavailable' : 'loading']}}</span>
+        {{ unavailable ? " :(" : "..." }}
+    </div>
+</div></script><script type="text/ng-template" id="/app/spots/phone/opentab/partials/call_log_opentab_notification.html"><div ng-controller="CallLogOpentabNotificationCtrl" class="call-log-notification" ng-click="openChat(notification.data.number,contact,'notifications')">
+    <contact contact="contact" hide-name="true" theme-color="true"></contact>
+    <div class="details">
+        <span class="title">{{ contact.display ? contact.display : notification.data.number }}</span>
+        <span class="description">{{i18n.missed_call}}</span>
+        <span class="time">{{ notification.data.timestamp | fromNow }}</span>
+    </div>
+</div></script><script type="text/ng-template" id="/app/spots/facebook/opentab/partials/facebook_opentab_notification.html"><div class="facebook-notification">
+    <div class="wrapper" ng-if="notification.type =='Facebook-Birthday'" ng-link="http://www.facebook.com/{{ notification.data.id }}" ng-click="gae('Notifications', notification.type, 'Click')">
+        <div class="image" ng-style="{'background-image': 'url('+notification.data.image+')'}">
+            <div class="icon bday"></div>
+        </div>
+
+        <div class="details">
+            <div>{{i18n.hooray + '!!'}}</div>
+            <div class="bold">{{i18n.bday_today.replace('%s',notification.data.name)}}</div>
+            <div>{{i18n.bday_text}}</div>
+        </div>
+    </div>
+
+    <div class="wrapper" ng-if="notification.type =='Facebook-Event'" ng-link="http://www.facebook.com/{{ notification.data.id }}" ng-click="gae('Notifications',  notification.type, 'Click')">
+        <div class="image" ng-style="{'background-image': 'url('+notification.data.image+')'}">
+            <div class="icon event"></div>
+        </div>
+
+        <div class="details">
+            <div>{{i18n.invited_to}}</div>
+            <div class="bold">{{notification.data.name}}</div>
+            <div>{{ notification.data.Date | fromNow }}</div>
+        </div>
+    </div>
+</div></script><script type="text/ng-template" id="/app/opentab/partials/components/favoritesImageUpload.html"><div class="favorites-image-upload">
+
+    <div class="view" ng-show="!item.userIcon">
+        <span ng-click="selectFile();" class="upload" id="upload-btn" ng-show="percent==0">{{i18n.upload}}</span>
+        <div ng-show="percent!=0" ng-style="{'width': percent + '%'}" class="progress-bar"></div>
+    </div>
+
+    <div class="view" ng-show="item.userIcon" ng-click="removeImage(item.userIcon)">
+        <span ng-show=" percent==0">{{i18n.remove}}</span>
+    </div>
+
+</div></script><div id="spotsFader" ng-click="closeAll()"></div><div id="topLeft" class="part" ng-class="{show:parts.topLeft}" ng-include="parts.topLeft" onload="slideIn('topLeft')"></div><div id="topRight" class="part" ng-class="{show:parts.topRight}" ng-include="parts.topRight" onload="slideIn('topRight')"></div><div id="bottomLeft" class="part" ng-class="{show:parts.bottomLeft}" ng-include="parts.bottomLeft" onload="slideIn('bottomLeft')"></div><div id="bottomRight" class="part" ng-class="{show:parts.bottomRight}" ng-include="parts.bottomRight" onload="slideIn('bottomRight')"></div><div id="spotsHandle" ng-if="config.opentab_enabled" ng-controller="OpentabSearchHandleCtrl" ng-mousedown="startDragSearchHandle($event)" ng-click="openSearch()" ng-style="{ background: config.themeColor }"></div><div id="appsHandle" ng-include="paths.spots + '/apps/opentab/partials/AppsGrabOpentab.html'"></div><div ng-if="config.ftueOpentab.step !== null" class="ftue" ng-controller="OpentabFtueStepCtrl"><div ng-if="step > 0" ng-include="paths.app + '/opentab/partials/ftue_partials/step' + step + '.html'"></div></div><script type="text/ng-template" id="/app/opentab/partials/opentab_notifications.html"><div ng-controller="OpentabNotifications" class="notifications">
+
+   <div class="widgets">
+    <div class="notifications-widgets">
+        <div class="widget"
+             ng-repeat="widget in notificationWidgets | orderBy:'priority' track by $index"
+             ng-include="paths.spots + widget.partial"
+             ng-class="{selected:selectedWidgetIndex == $index}">>
+        </div>
+    </div>
+
+        <ul class="notifications-widgets-icons">
+            <li ng-repeat="widget in notificationWidgets | orderBy:'priority' track by $index"
+                ng-class="{selected:selectedWidgetIndex == $index}"
+                ng-click="selectWidget($index)">
+                <img ng-src="{{paths.base + widget.icon}}" ng-attr-title="{{widget.name}}" />
+            </li>
+        </ul>
+    </div>
+
+    <div class="all-notifications">
+        <div class="notification"
+             ng-repeat="notification in notifications | limitTo:-15 | orderBy:timestamp track by notification.id">
+            <div ng-include="paths.app + notificationsPartials[notification.spotID]"></div>
+            <div class="close-btn"  ng-click="removeNotification(notification)"></div>
+        </div>
+    </div>
+</div></script><script type="text/ng-template" id="/app/spots/phone/opentab/partials/phone_chat.html"><div class="chat" ng-controller="ChatCtrl">
+    <div ng-show="currentView == 'default'" class="close" ng-click="closeChat()"></div>
+    <div class="chat-header" ng-style="{'background-color':config.themeColor}">
+        <div ng-if="currentView=='default'" class="default-view">
+            <contact contact="chatItem" hide-name="true"></contact>
+
+            <div class="contact-details">
+                <div class="title">{{chatItem.display}}</div>
+                <div class="number">{{chatItem.phone | normalizePhoneNumber}}</div>
+            </div>
+        </div>
+
+        <div ng-show="currentView == 'calling'" class="calling-view">
+            <contact class="left" contact="chatItem" hide-name="true"></contact>
+            <div class="view-text">
+                <span>{{i18n.calling}}</span>
+                {{chatItem.givenName}}...
+            </div>
+            <div class="cancel-call-btn" ng-click="cancelCall()"></div>
+        </div>
+
+        <div ng-show="currentView == 'call_connected'" class="call-connected">
+            <contact class="left" contact="chatItem" hide-name="true"></contact>
+            <div class="view-text">{{i18n.you_are_now_connected}}</div>
+            <div class="cancel-call-btn" ng-click="cancelCall()"></div>
+        </div>
+    </div>
+
+
+    <div class="messages">
+        <div class="scroll-window">
+            <div ng-repeat="sms in numberSmss | orderBy:'timestamp' | limitTo:-6 track by sms.id" class="message" ng-class="{'outgoing-message':sms.type==2||sms.type==3 ,'incoming-message':sms.type==1}">
+
+                <contact ng-if="sms.type == 1" contact="threadData.contact" hide-name="true" theme-color="true"></contact>
+                <contact ng-if="sms.type != 1" contact="userContact" hide-name="true" theme-color="true"></contact>
+
+                <div class="message-text">
+                    <div class="sms-text">
+                        <span ng-if="sms.type==1" class="sender" ng-if="sms.type==1">{{chatItem.givenName}}:&nbsp;</span>
+                        <span ng-if="sms.type==2 || sms.type==3" class="sender">me:&nbsp;</span>
+                        <span ng-model="messageText">{{sms.text}}</span>
+                    </div>
+
+                    <div class="sms-time">
+                        <span>{{ sms.timestamp | fromNow }}</span>
+                        <img ng-if="sms.type == 3 || sms.type == 2" class="v-icon v-icon-first ng-scope" ng-src="{{paths.img + '/icons/v-icon.png'}}">
+                        <img ng-if="sms.type == 2" class="v-icon" ng-src="{{paths.img + '/icons/v-icon.png'}}">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <textarea auto-resize class="current-message" ng-model="smsText" ng-trim="false" id="smsText" rows="2" autofocus></textarea>
+
+        <div class="send">
+            <div ng-style="{'background-color':(config.themeColor)}" class="call-btn" ng-click="callNumber(chatItem.phone)"></div>
+            <div ng-style="{'background-color':(config.themeColor)}" ng-click="sendSms()" class="sendBtn">{{i18n.send}}</div>
+        </div>
+
+    </div>
+</div></script><script type="text/ng-template" id="/app/spots/search/opentab/partials/search_opentab.html"><div id="opentab_search" ng-controller="OpentabSearchCtrl">
+    <div class="search-bar" ng-style="{background:config.themeColor}">
+        <input class="search-box" type="text" ng-model="searchTerm" ng-style="{'background-color':config.themeColor}"/>
+    </div>
+
+    <div class="search-results" ng-style="{background:config.themeColor}">
+        <div ng-repeat="spot in results[searchTerm] track by $index">
+            <div ng-if="spot.results.length > 0">
+                <div class="result"
+                     ng-repeat="result in spot.results | filter:{show:true} | orderBy:'score':true  track by $index"
+                     id="{{ $parent.$index }}_{{ $index }}"
+                     ng-class="{ selected:selectedCategory == $parent.$index && selectedItem == $index }"
+                     ng-mouseover="setSelected($parent.$index, $index)">
+                        <div ng-include="paths.spots + '/' + spotsById[spot.spotID].location +'/opentab/partials/' + spotsById[spot.spotID].opentab.search_result_partial"></div>
+                </div>
+            </div>
+        </div>
+
+        <div ng-if="!results[searchTerm].length && !searchTerm">
+            <div ng-repeat="spot in defaultResults track by $index">
+                <div ng-if="spot.results.length">
+                    <div class="result"
+                         ng-repeat="result in spot.results | orderBy:'score':true track by $index"
+                         id="{{ $parent.$index }}_{{ $index }}"
+                         ng-class="{ selected:selectedCategory == $parent.$index && selectedItem == $index }"
+                         ng-mouseover="setSelected($parent.$index, $index)">
+                            <div ng-include="paths.spots + '/' + spotsById[spot.spotID].location +'/opentab/partials/' + spotsById[spot.spotID].opentab.search_result_partial"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div></script><script type="text/ng-template" id="/app/spots/phone/opentab/partials/sms_opentab_notification.html"><div ng-controller="SmsOpentabNotificationCtrl" class="call-log-notification" ng-click="openChat(notification.data.number,contact,'notifications')">
+    <contact contact="contact" hide-name="true" theme-color="true"></contact>
+    <div class="details">
+        <span class="title">{{ contact.display ? contact.display : notification.data.number }}</span>
+        <span class="description">{{ notification.data.text }}</span>
+        <span class="time">{{ notification.data.timestamp | fromNow }}</span>
+    </div>
+</div></script><script type="text/ng-template" id="/app/opentab/partials/ftue_partials/step1.html"><div class="step1">
+
+    <div class="step-guidance">
+        <div class="title">
+            <span>{{i18n.spots}}</span>
+            <span ng-style="{color:config.themeColor}">powersearch</span>
+        </div>
+        <div class="text">{{i18n.ftue_opentab_step1_text}}</div>
+        <div ng-click="next(2)" class="btn" ng-style="{border:'1px solid'+ config.themeColor}">{{i18n.next}}</div>
+    </div>
+
+    <div ng-click="skip(1)" class="skip">{{i18n.skip_the_tour}}</div>
+</div></script><script type="text/ng-template" id="/app/opentab/partials/ftue_partials/step2.html"><div class="step2">
+    <div class="background"></div>
+
+<div class="favorites-search-ftue">
+    <div class="half-circle"></div>
+</div>
+
+    <div class="step-guidance">
+        <div class="title">
+            <span>{{i18n.your}}</span>
+            <span ng-style="{color:config.themeColor}">{{i18n.favorites}}</span>
+        </div>
+        <div class="text">{{i18n.ftue_opentab_step2_text}}</div>
+        <div ng-click="next(3)" class="btn" ng-style="{border:'1px solid'+ config.themeColor}">{{i18n.next}}</div>
+    </div>
+
+    <div ng-click="skip(2)" class="skip">{{i18n.skip_the_tour}}</div>
+</div></script><script type="text/ng-template" id="/app/opentab/partials/ftue_partials/step3.html"><div class="step3">
+
+    <div class="step-guidance">
+        <div class="title">
+            <span>{{i18n.add_to_favorites.replace('%s','')}}</span>
+            <span ng-style="{color:config.themeColor}">{{i18n.favorites}}</span>
+        </div>
+        <div class="text">{{i18n.ftue_opentab_step3_text}}</div>
+        <span ng-click="next()" class="btn" ng-style="{border:'1px solid'+ config.themeColor}">{{i18n.finish}}</span>
+    </div>
+
+<div class="search-bar"></div>
+    <div ng-click="skip(3)" class="skip">{{i18n.skip_the_tour}}</div>
+</div></script>

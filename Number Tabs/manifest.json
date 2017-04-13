@@ -1,0 +1,20 @@
+﻿{
+	"name" : "Number Tabs",
+	"version" : "1.0",
+	"manifest_version" : 2,
+	"description": "Number Tabs",
+
+	"permissions" : [
+		"tabs",
+		"<all_urls>"
+	],
+
+	"background" : {
+		"scripts" : ["jquery-1.11.3.min.js", "background.js"],
+		"persistent" : true
+	},
+
+	"omnibox" : {
+		"keyword" : "#"
+	}
+}
