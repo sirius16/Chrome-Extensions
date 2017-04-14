@@ -1,9 +1,0 @@
-reg add "HKLM\Software\Wow6432Node\Google\Chrome\Extensions\lhbbmjhfknfomcalbplophhohboekih" -v "Path" /d "\"C:\Users\amozu\Google Drive\Scripts\Chrome Extensions\Pinned.crx\""
-reg add "HKLM\Software\Wow6432Node\Google\Chrome\Extensions\cgajadkjhmlchgmbmebjbjhgcgcnfomf" -v "Path" /d "\"C:\Users\amozu\Google Drive\Scripts\Chrome Extensions\Split Tabs.crx\""
-reg add "HKLM\Software\Wow6432Node\Google\Chrome\Extensions\klacbnfpdhmoojaehdhppmllakdelnfm" -v "Path" /d "\"C:\Users\amozu\Google Drive\Scripts\Chrome Extensions\Suspend Paste.crx\""
-reg add "HKLM\Software\Wow6432Node\Google\Chrome\Extensions\ebkmckdinpjehmlbagplhiaedpnipice" -v "Path" /d "\"C:\Users\amozu\Google Drive\Scripts\Chrome Extensions\Switch to OneTab.crx\""
-
-reg add "HKLM\Software\Wow6432Node\Google\Chrome\Extensions\lhbbmjhfknfomcalbplophhohboekih" -v "Version" /d   "2.0"
-reg add "HKLM\Software\Wow6432Node\Google\Chrome\Extensions\cgajadkjhmlchgmbmebjbjhgcgcnfomf" -v "Version" /d   "1.0"
-reg add "HKLM\Software\Wow6432Node\Google\Chrome\Extensions\klacbnfpdhmoojaehdhppmllakdelnfm" -v "Version" /d   "2.1"
-reg add "HKLM\Software\Wow6432Node\Google\Chrome\Extensions\ebkmckdinpjehmlbagplhiaedpnipice" -v "Version" /d   "2.5"

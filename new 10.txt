@@ -7,9 +7,4 @@ ebkmckdinpjehmlbagplhiaedpnipice
 
  
 
-" -v "Version" /d 
-
-"\"C:\Users\amozu\Google Drive\Scripts\Chrome Extensions\Pinned.crx\""
-"\"C:\Users\amozu\Google Drive\Scripts\Chrome Extensions\Split Tabs.crx\""
-"\"C:\Users\amozu\Google Drive\Scripts\Chrome Extensions\Suspend Paste.crx\""
-"\"C:\Users\amozu\Google Drive\Scripts\Chrome Extensions\Switch to OneTab.crx\""
+" -v update_url /d "https://github.com/sirius16/Chrome-Extensions/raw/master/update.xml"
