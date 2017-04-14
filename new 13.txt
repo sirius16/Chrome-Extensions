@@ -1,0 +1,4 @@
+reg add "HKLM\Software\Wow6432Node\Google\Chrome\Extensions\lhbbmjhfknfomcalbplophhohboekih" -v "update_url" /d "https://clients2.google.com/service/update2/crx"
+reg add "HKLM\Software\Wow6432Node\Google\Chrome\Extensions\cgajadkjhmlchgmbmebjbjhgcgcnfomf" -v "update_url" /d "https://clients2.google.com/service/update2/crx"
+reg add "HKLM\Software\Wow6432Node\Google\Chrome\Extensions\klacbnfpdhmoojaehdhppmllakdelnfm" -v "update_url" /d "https://clients2.google.com/service/update2/crx"
+reg add "HKLM\Software\Wow6432Node\Google\Chrome\Extensions\ebkmckdinpjehmlbagplhiaedpnipice" -v "update_url" /d "https://clients2.google.com/service/update2/crx"

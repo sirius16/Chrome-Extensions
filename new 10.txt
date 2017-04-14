@@ -1,0 +1,15 @@
+reg add "HKLM\Software\Wow6432Node\Google\Chrome\Extensions\
+
+lhbbmjhfknfomcalbplophhohboekih
+cgajadkjhmlchgmbmebjbjhgcgcnfomf
+klacbnfpdhmoojaehdhppmllakdelnfm
+ebkmckdinpjehmlbagplhiaedpnipice
+
+ 
+
+" -v "Version" /d 
+
+"\"C:\Users\amozu\Google Drive\Scripts\Chrome Extensions\Pinned.crx\""
+"\"C:\Users\amozu\Google Drive\Scripts\Chrome Extensions\Split Tabs.crx\""
+"\"C:\Users\amozu\Google Drive\Scripts\Chrome Extensions\Suspend Paste.crx\""
+"\"C:\Users\amozu\Google Drive\Scripts\Chrome Extensions\Switch to OneTab.crx\""
