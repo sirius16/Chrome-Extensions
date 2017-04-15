@@ -1,15 +1,15 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
     <app appid='hbbmjhfknfomcalbplophhohboekih'>
-    <updatecheck codebase='https://github.com/sirius16/Chrome-Extensions/raw/master/Pinned.crx' version='2.0' />
+    <updatecheck codebase='https://raw.githubusercontent.com/sirius16/Chrome-Extensions/master/Pinned.crx' version='2.0' />
   </app>
   <app appid='ajadkjhmlchgmbmebjbjhgcgcnfomf'>
-    <updatecheck codebase='https://github.com/sirius16/Chrome-Extensions/raw/master/Split%20Tabs.crx' version='1.0' />
+    <updatecheck codebase='https://raw.githubusercontent.com/sirius16/Chrome-Extensions/master/Split%20Tabs.crx' version='1.0' />
   </app>
   <app appid='acbnfpdhmoojaehdhppmllakdelnfm'>
-    <updatecheck codebase='https://github.com/sirius16/Chrome-Extensions/raw/master/Suspend%20Paste.crx' version='2.1' />
+    <updatecheck codebase='https://raw.githubusercontent.com/sirius16/Chrome-Extensions/master/Suspend%20Paste.crx' version='2.1' />
   </app>
   <app appid='kmckdinpjehmlbagplhiaedpnipice'>
-    <updatecheck codebase='https://github.com/sirius16/Chrome-Extensions/raw/master/Switch%20to%20OneTab.crx' version='2.5' />
+    <updatecheck codebase='https://raw.githubusercontent.com/sirius16/Chrome-Extensions/master/Switch%20to%20OneTab.crx' version='2.5' />
   </app>
 </gupdate>

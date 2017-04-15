@@ -6,9 +6,11 @@
 console.log($j);
 str = JSON.stringify;
 function obj(text) {
-	var obj = $j("<textarea />").text(text);
-	$j("body").append(obj);
-	obj.select().focus();
+	if (typeof text == "object")
+		text=JSON.stringify(text,null,4);
+	var obj = $j("<textarea />",{text:text}).appendTo("body").select();
+	document.execCommand("copy");
+	obj.remove();
 }
 
 String.prototype.parse = function () {
@@ -27,13 +29,13 @@ String.prototype.parse = function () {
 }
 
 search = a => $j("*").filter(function () {
-			return this.outerHTML == $j(a)[0].outerHTML
-		})
-// function parse(str) {
-// var args = [].slice.call(arguments, 1),
-// i = 0;
+		return this.outerHTML == $j(a)[0].outerHTML
+	})
+	// function parse(str) {
+	// var args = [].slice.call(arguments, 1),
+	// i = 0;
 
-// return str.replace(/%s/g, function () {
-// return args[i++];
-// });
-// }
+	// return str.replace(/%s/g, function () {
+	// return args[i++];
+	// });
+	// }
