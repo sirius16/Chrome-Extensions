@@ -3,7 +3,6 @@
 } catch (e) {
 	console.log(e)
 }
-console.log($j);
 str = JSON.stringify;
 function obj(text) {
 	if (typeof text == "object")
@@ -39,3 +38,5 @@ search = a => $j("*").filter(function () {
 	// return args[i++];
 	// });
 	// }
+	
+inc={get(...g){return g[0][g[1]] | 0}};

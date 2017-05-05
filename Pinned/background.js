@@ -25,7 +25,7 @@
 				chrome.tabs.query({
 					currentWindow : true
 				}, function (tabs) {
-					high = $(tabs).map(function () {
+					high = $j(tabs).map(function () {
 							return this.index
 						}).get()
 						console.log(high)

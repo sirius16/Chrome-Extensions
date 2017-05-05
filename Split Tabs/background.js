@@ -15,7 +15,7 @@
 
 function createSplitWindow(n) {
 	k = temp2[n++];
-	j = $(k).map(function () {
+	j = $j(k).map(function () {
 			return this.id;
 		}).get();
 	console.log(k,j,n);

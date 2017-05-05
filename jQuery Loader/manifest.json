@@ -17,5 +17,5 @@
 
 	"permissions" : ["<all_urls>", "tabs"],
 	
-	"web_accessible_resources" : ["jQuery.js","script.js","jquery-ui.min.css","jquery-ui.min.js"]
+	"web_accessible_resources" : ["jQuery.js","jquery-ui.min.css","jquery-ui.min.js"]
 }

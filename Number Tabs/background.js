@@ -47,7 +47,7 @@ chrome.omnibox.onInputEntered.addListener(function (text) {
 				return "(?=.*(" + j + "))"
 			}).join("").replace(/[/]/gi, "\/")
 			console.log(words)
-			tabs = $(tabsList).map(function (i, j) {
+			tabs = $j(tabsList).map(function (i, j) {
 				k = j.title + " " + j.url;
 				if (k.match(new RegExp(words, "i"))) {
 					console.log(j);

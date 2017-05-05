@@ -1,6 +1,6 @@
 ﻿Clipboard = {
 	read : function () {
-		ClipboardBuffer = $("<textarea />").appendTo('body').val('').select()
+		ClipboardBuffer = $j("<textarea />").appendTo('body').val('').select()
 		document.execCommand('paste')
 		return ClipboardBuffer.val();
 	}

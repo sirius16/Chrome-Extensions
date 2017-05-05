@@ -4176,53 +4176,5 @@ String.prototype.parse = function () {
 		return e
 }
 window.log=function(){log.history=log.history||[];log.history.push(arguments);if(this.console){console.log(...arguments)}}
-test=function(){log("test")};
-try {
-	console.log($);
-} catch (e) {
-	console.log(e)
-}
-str = JSON.stringify;
-function obj(text) {
-	if (typeof text == "object")
-		text=JSON.stringify(text,null,4);
-	var obj = $j("<textarea />",{text:text}).appendTo("body").select();
-	document.execCommand("copy");
-	obj.remove();
-}
-
-String.prototype.parse = function () {
-	var e = this.toString();
-	if (!arguments.length)
-		return e;
-	var t = typeof arguments[0],
-	n = "string" == t || "number" == t ? Array.prototype.slice.call(arguments) : arguments[0];
-	for (var i in n)
-		e = e.replace(new RegExp("\\{" + i + "\\}", "gi"), n[i]);
-	i = 0;
-	e = e.replace(/%s/g, function (x) {
-			return n[i] ? n[i++] : x;
-		})
-		return e
-}
-
-search = a => $j("*").filter(function () {
-		return this.outerHTML == $j(a)[0].outerHTML
-	})
-	// function parse(str) {
-	// var args = [].slice.call(arguments, 1),
-	// i = 0;
-
-	// return str.replace(/%s/g, function () {
-	// return args[i++];
-	// });
-	// }
-	
-inc={get(...g){return g[0][g[1]] | 0}};
-arrins={get(...g){return g[0][g[1]] || []},set(g,h,i,j){g[h]=j[h].concat(i)}};
-// Array.prototype.entry = function (){return [...this.entries()]};
-String.prototype.match2 = function(b,...d){c=[];while(a=b.exec(this))c.push(a);d=d.reduce((i,j)=>i.concat(j),[]);return c.map(a=>d.reduce((x,y)=>(x[y]=a[y]) && x,{}))};
-GetNext = (l,m=0) => (next = $j(l).filter((i,j)=>j.getBoundingClientRect().top >> 0 >m)[0]) && next.scrollIntoView();
-GetPrev = (l,m=0) => (prev = $j(l).filter((i,j)=>j.getBoundingClientRect().top >> 0 <m)[0]) && prev.scrollIntoView();
-NextPrev = (l,m=0) => $j(window).keypress(e=>(np = {"j":(l,m)=>{GetNext(l,m)},k:(l,m)=>{GetPrev(l,m)}}) && e.key in np && np[e.key](l,m))
+test=function(){log("test")}
 load()
