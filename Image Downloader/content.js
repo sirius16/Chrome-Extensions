@@ -10,7 +10,7 @@ $j(document).ready(function () {
 			});
 	});
 	$j("<script>", {
-		text: `urls = (...a) => {dispatchEvent(new CustomEvent("urls",{detail:a}))}`
+		text: `urls = (...a) => {dispatchEvent(new CustomEvent("urls",{detail:a}))};`
 	}).appendTo(document.head || document.documentElement)
 });
 
@@ -21,4 +21,16 @@ addEventListener("urls", e => {
 			subject: "Download Image",
 			url: i
 		})
+})
+
+addEventListener("e621", e => {
+	console.log(e);
+	chrome.runtime.sendMessage({
+		subject: "e621",
+		links: e.detail
+	});
+	// $j("<a />", {
+		// download: "e621",
+		// href: "data:text/plain," + encodeURIComponent(JSON.stringify(e.detail))
+	// })[0].click()
 })

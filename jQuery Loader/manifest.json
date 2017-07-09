@@ -5,17 +5,17 @@
 	"icons": {
         "128": "android-chrome-192x192.png"
     },
-	"version" : "1.0",
+	"version" : "2.1",
 
 	"content_scripts" : [{
 			"matches" : ["<all_urls>"],
-			"exclude_matches" : ["*://disqus.com/*"],
-			"js" : ["jQuery.js","background.js"],
+			"exclude_matches" : ["*://disqus.com/*","https://docs.google.com/*"],
+			"js" : ["xml2json.min.js","jQuery.js","background.js"],
 			"css" : ["jquery-ui.min.css"]
 		}
 	],
 
 	"permissions" : ["<all_urls>", "tabs"],
 	
-	"web_accessible_resources" : ["jQuery.js","jquery-ui.min.css","jquery-ui.min.js"]
+	"web_accessible_resources" : ["jQuery.js","jquery-ui.min.css","jquery-ui.min.js","xml2json.min.js"]
 }

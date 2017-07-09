@@ -19,10 +19,11 @@ chrome.commands.onCommand.addListener(function (command) {
 	[switchOnetab,"chrome://extensions/"],
 	[switchOnetab,"chrome-extension://coonecdghnepgiblpccbbihiahajndda/popup.html"],
 	[switchOnetab,"chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/history.html", true],
-	[],
+	[switchOnetab, "https://photos.google.com/"],
 	[switchOnetab,"chrome-extension://dhdgffkkebhmkfjojejmpbldmpobfkfo/options.html"],
 	[switchOnetab,"chrome-extension://logpjaacgmcbpdkdchjiaagddngobkck/options.html"],
-	[switchOnetab,"https://tweetdeck.twitter.com"]
+	[switchOnetab,"https://tweetdeck.twitter.com"],
+	[switchOnetab,"https://twitter.com/i/notifications"]
 ][command];
 now[0](...now.splice(1));
 });

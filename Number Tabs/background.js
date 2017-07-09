@@ -39,7 +39,7 @@ chrome.omnibox.onInputEntered.addListener(function (text) {
 						j = "^((?!" + j.slice(1) + ").)*$";
 					j = j.replace(/^#/, "http://");
 				if (j.match(/^:/))
-					j = j.slice(1).match(/(?=(?:https?:[/]+)?(.*?)[/]).*/)[1];
+					j = j.slice(1).match(/(?=(chrome-extension.*uri=)?(?:https?:[/]+)?(.*?)[/]).*/)[2];
 				if (j.match(/(https?|ftp|ssh|mailto):/))
 					j = j.replace(/[^/]/g, function (x) {
 							return "[%s]".parse(x);

@@ -1,8 +1,10 @@
 $j(document).ready(function () {
-	for (let [i,j] of ["jQuery.js","jquery-ui.min.js"].entries())
+	for (let [i,j] of ["xml2json.min.js","jQuery.js","jquery-ui.min.js"].entries())
 	document.head.appendChild($j('<script />', {
 			src : chrome.extension.getURL(j)
 		}).on("load", [i,j], e => 
-			console.log(i || dispatchEvent(new Event("$j")))
+			console.log(i-1 || dispatchEvent(new Event("$j")))
 		)[0])
+	// $j("<script />",text:`
+// ).appendTo("head")
 })
