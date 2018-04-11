@@ -60,7 +60,7 @@ onDeterminingFilename = (i, suggest) => {
 			console.log(a, [b, i] = a.detail)
 			chrome.tabs.get(b.tab.id, tab => {
 				console.log(i);
-				title = tab.title;
+				title = tab.title.replace(/^\h*\(\d+\+?\)/,"").trim();
 				url = new URL(tab.url).hostname.replace("www.", "");
 				file = i.filename.split(".");
 				for (j in file)
@@ -68,7 +68,7 @@ onDeterminingFilename = (i, suggest) => {
 						extension = "." + file.splice(-1)[0];
 				file = file.join("_");
 				file = title.trim() + " " + file;
-				file = url + '/' + file.replace(/[^-a-z0-9]+/gi, " ").trim();
+				file = url + '/' + file.replace(/[^-a-z0-9+%!=]+/gi, " ").trim();
 				console.log(file, extension);
 				suggest({
 					filename: file + extension.replace(/:(large|small)/, ""),

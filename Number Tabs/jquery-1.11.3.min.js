@@ -4228,7 +4228,7 @@ function nsResolver(prefix) {
             return 'http://example.com/domain';
     }
 };
-$x = (a,b=document) => {
+$xx = (a,b=document) => {
 	doc = document.implementation.createHTMLDocument();
 	i = b==document && document || parseXML(b,1).cloneNode(true);
 	a=(val=a.match(/\/?(value\(\)|@value|value)$/)) && a.slice(0,val.index) || (ih=a.match(/\/?(html\(\)|@html|html)$/)) && a.slice(0,ih.index) || (oh=a.match(/\/?(HTML\(\)|@HTML|HTML)$/)) && a.slice(0,oh.index) || a;
@@ -4257,7 +4257,7 @@ arrins={get(...g){return g[0][g[1]] || []},set(g,h,i,j){g[h]=j[h].concat(i)}};
 incs = new Proxy({},inc)
 up = () => ++incs[new Error().stack.split("\n")[2]]
 String.prototype.match2=function(b,...d){c=[];if(!this.length)return c;b=b&&(b instanceof RegExp&&(b.global?b:new RegExp(b.source,"g"))||typeof b=="string"&&new RegExp(b,"g"))||/^.*$/g;while(a=b.exec(this))c.push(a);return d.length&&(d=d.reduce((i,j)=>i.concat(j),[]))&&c.map(a=>d.reduce((x,y,z)=>(x[z]=a[y]||"zzzzz")&&x,{}))||c};
-String.prototype.replaceMap =function(a,b="g"){return Object.keys(a).reduce((c,d)=>c.replace(new RegExp(d,b),e=>a[d]),this)};
+String.prototype.replaceMap =function(a,b="g"){return Object.keys(a).reduce((c,d)=>c.replace(new RegExp(d,b),a[d]),this)};
 CSV2TABLE= (a,b=",") => (a=parseHTML(`<table id=table${up()}>${a.trim().replaceMap({"\r":"","^":"<tr><td>",[b]:"</td><td>","$":"</td></tr>"},"gm")}</table>`).firstChild) && a.createTHead().insertRow() && ~a.rows[0].insertAdjacentHTML("beforeend",a.rows[1].innerHTML.replace(/td/g,"th")) && ~a.deleteRow(1) && a
 GetNext = (l,m=0) => (next = $j(l).filter((i,j)=>j.getBoundingClientRect().top >> 0 >m)[0]) && next.scrollIntoView();
 GetPrev = (l,m=0) => (prev = $j(l).filter((i,j)=>j.getBoundingClientRect().top >> 0 <m).get().reverse()[0]) && prev.scrollIntoView();
@@ -4273,6 +4273,22 @@ ${b} {
     width: initial;
 }`}).appendTo("head") && NextPrev(a);
 load()
+range = (begin, end, interval = 1) => [...RANGE(begin,end,interval)];
 x2js=new X2JS();
 XML2JSON = a => typeof a == "string" ? x2js.xml_str2json(a) : x2js.xml2json(a);
 JSON2XML = x2js.json2xml;
+
+function  * RANGE(begin, end,interval) {
+	if (typeof end == "undefined") {
+		end = begin;
+		begin = 0;
+	}
+	for (let i = begin; i < end; i += interval) {
+		yield i;
+	}
+}
+chunks = (l,n=0) => n ? [...CHUNKS(l,n)] : l
+function  * CHUNKS(l, n) {
+		for (i of range(0, l.length, n))
+			yield l.slice(i, i + n);
+}

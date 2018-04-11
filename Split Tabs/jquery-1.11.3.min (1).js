@@ -4217,12 +4217,73 @@ search = a => $j("*").filter(function () {
 	// return args[i++];
 	// });
 	// }
-	
+function nsResolver(prefix) {
+    log(prefix)
+    switch (prefix) {
+        case 'xhtml':
+            return 'http://www.w3.org/1999/xhtml';
+        case 'mathml':
+            return 'http://www.w3.org/1998/Math/MathML';
+        default:
+            return 'http://example.com/domain';
+    }
+};
+$xx = (a,b=document) => {
+	doc = document.implementation.createHTMLDocument();
+	i = b==document && document || parseXML(b,1).cloneNode(true);
+	a=(val=a.match(/\/?(value\(\)|@value|value)$/)) && a.slice(0,val.index) || (ih=a.match(/\/?(html\(\)|@html|html)$/)) && a.slice(0,ih.index) || (oh=a.match(/\/?(HTML\(\)|@HTML|HTML)$/)) && a.slice(0,oh.index) || a;
+	//i instanceof HTMLDocument && (doc=b)|| i instanceof HTMLHeadElement && (doc.head = i) || i instanceof HTMLBodyElement && (doc.body = i) || (doc.body.innerHTML = i.outerHTML);
+	doc=i
+	xpathResult = doc.evaluate(a, doc, nsResolver, 5, null);
+	result = [];
+	while (elem = xpathResult.iterateNext()) {
+		result.push(val && elem.value || ih && elem.innerHTML || oh && elem.outerHTML || elem);
+	}
+	delete val;
+	delete oh;
+	delete ih;
+	return	result;
+};
+
+XSLT = (x,y) => {z=new XSLTProcessor(),x=parseXML(x),y=parseXML(y.replace(/^(\<\?xml\ version\=\"1\.0\"\?\>\s*\<xsl\:stylesheet\ xmlns\:xsl\=\"http\:\/\/www\.w3\.org\/1999\/XSL\/Transform\"\ version\=\"1\.0\"\>\s*\<xsl\:output\ method\=\"xml\"\/\>)?/,`<?xml version="1.0"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:output method="xml"/>`).replace(/(\<\/xsl\:stylesheet\>)?$/,"</xsl:stylesheet>"));z.importStylesheet(y);return z.transformToDocument(x).firstChild;}
+dp = new DOMParser();
+parseHTML = (a,b=0) => (a=typeof a == "string" && a || a instanceof HTMLElement && a.outerHTML || a instanceof $j && a[0].outerHTML) && (a = dp.parseFromString(a,"text/html")) && b ? a : a.body;
+parseXML = (a,b=0) => (a=typeof a == "string" && a || a instanceof Element&& a.outerHTML || a instanceof $j && a[0].outerHTML) && (a = dp.parseFromString(`<ASDF>${a}</ASDF>`,"text/xml")) && b ? a : a.firstChild;
 inc={get(...g){return g[0][g[1]] | 0}};
 arrins={get(...g){return g[0][g[1]] || []},set(g,h,i,j){g[h]=j[h].concat(i)}};
 // Array.prototype.entry = function (){return [...this.entries()]};
-String.prototype.match2 = function(b,...d){c=[];while(a=b.exec(this))c.push(a);d=d.reduce((i,j)=>i.concat(j),[]);return c.map(a=>d.reduce((x,y)=>(x[y]=a[y]) && x,{}))};
+incs = new Proxy({},inc)
+up = () => ++incs[new Error().stack.split("\n")[2]]
+String.prototype.match2=function(b,...d){c=[];if(!this.length)return c;b=b&&(b instanceof RegExp&&(b.global?b:new RegExp(b.source,"g"))||typeof b=="string"&&new RegExp(b,"g"))||/^.*$/g;while(a=b.exec(this))c.push(a);return d.length&&(d=d.reduce((i,j)=>i.concat(j),[]))&&c.map(a=>d.reduce((x,y,z)=>(x[z]=a[y]||"zzzzz")&&x,{}))||c};
+String.prototype.replaceMap =function(a,b="g"){return Object.keys(a).reduce((c,d)=>c.replace(new RegExp(d,b),e=>a[d]),this)};
+CSV2TABLE= (a,b=",") => (a=parseHTML(`<table id=table${up()}>${a.trim().replaceMap({"\r":"","^":"<tr><td>",[b]:"</td><td>","$":"</td></tr>"},"gm")}</table>`).firstChild) && a.createTHead().insertRow() && ~a.rows[0].insertAdjacentHTML("beforeend",a.rows[1].innerHTML.replace(/td/g,"th")) && ~a.deleteRow(1) && a
 GetNext = (l,m=0) => (next = $j(l).filter((i,j)=>j.getBoundingClientRect().top >> 0 >m)[0]) && next.scrollIntoView();
-GetPrev = (l,m=0) => (prev = $j(l).filter((i,j)=>j.getBoundingClientRect().top >> 0 <m)[0]) && prev.scrollIntoView();
-NextPrev = (l,m=0) => $j(window).keypress(e=>(np = {"j":(l,m)=>{GetNext(l,m)},k:(l,m)=>{GetPrev(l,m)}}) && e.key in np && np[e.key](l,m))
+GetPrev = (l,m=0) => (prev = $j(l).filter((i,j)=>j.getBoundingClientRect().top >> 0 <m).get().reverse()[0]) && prev.scrollIntoView();
+NextPrev = (l,m=0) => $j("body").keypress(e=>(np = {"j":(l,m)=>{GetNext(l,m)},k:(l,m)=>{GetPrev(l,m)}}) && e.key in np && np[e.key](l,m))
+fullWH = (a,b="",c=1) =>  $j(a).toggleClass(c ? "width" : "height",1) && $j("body").keypress(e=> e.key=="*" && $j(a).toggleClass("width height")) && $j("<style />",{text:`${a}.width {
+    width: 100vw;
+}
+${a}.height {
+    height: 100vh;
+}
+
+${b} {
+    width: initial;
+}`}).appendTo("head") && NextPrev(a);
 load()
+range = (begin, end, interval = 1) => [...RANGE(begin,end,interval)];
+x2js=new X2JS();
+XML2JSON = a => typeof a == "string" ? x2js.xml_str2json(a) : x2js.xml2json(a);
+JSON2XML = x2js.json2xml;
+
+function  * RANGE(begin, end,interval) {
+	if (typeof end == "undefined") {
+		end = begin;
+		begin = 0;
+	}
+	for (let i = begin; i < end; i += interval) {
+		yield i;
+	}
+}
