@@ -4274,8 +4274,6 @@ ${b} {
 }`}).appendTo("head") && NextPrev(a);
 load()
 range = (begin, end, interval = 1) => [...RANGE(begin,end,interval)];
-XML2JSON = a => typeof a == "string" ? x2js.xml_str2json(a) : x2js.xml2json(a);
-JSON2XML = x2js.json2xml;
 
 function  * RANGE(begin, end,interval) {
 	if (typeof end == "undefined") {
@@ -4291,4 +4289,7 @@ function  * CHUNKS(l, n) {
 		for (i of range(0, l.length, n))
 			yield l.slice(i, i + n);
 }
-try{x2js=new X2JS();}finally{}
+try{x2js=new X2JS();
+XML2JSON = a => typeof a == "string" ? x2js.xml_str2json(a) : x2js.xml2json(a);
+JSON2XML = x2js.json2xml;
+}finally{}
