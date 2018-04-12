@@ -4273,22 +4273,10 @@ ${b} {
     width: initial;
 }`}).appendTo("head") && NextPrev(a);
 load()
-range = (begin, end, interval = 1) => [...RANGE(begin,end,interval)];
-
-function  * RANGE(begin, end,interval) {
-	if (typeof end == "undefined") {
-		end = begin;
-		begin = 0;
-	}
-	for (let i = begin; i < end; i += interval) {
-		yield i;
-	}
-}
-chunks = (l,n=0) => n ? [...CHUNKS(l,n)] : l
-function  * CHUNKS(l, n) {
-		for (i of range(0, l.length, n))
-			yield l.slice(i, i + n);
-}
+openChunks = (l,n) => openc = new Proxy(chunks(l,n),{get:i => i.shift().forEach(i=>open(i))});
+range = (...a) => [...(function * RANGE(begin,end,interval=1){if(typeof end=="undefined"){end=begin;begin=0;};for(let i=begin;i<end;i+=interval){yield i;}})(...a)];
+chunks = (l,n=0) => n ? [...(function * CHUNKS(l,n){for(i of range(0,l.length,n)) yield l.slice(i,i+n);})(l,n)] : l
+urlq = a => $j.extend({},...[...(function * URLQ ( a){ for ([i,j] of [...new URL(a).searchParams.entries()]) yield {[i]:j};})(a)])
 try {
 	if ("X2JS" in window) {
 
