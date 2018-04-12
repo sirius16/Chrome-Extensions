@@ -4273,7 +4273,7 @@ ${b} {
     width: initial;
 }`}).appendTo("head") && NextPrev(a);
 load()
-openChunks = (l,n) => openc = new Proxy(chunks(l,n),{get:i => i.shift().forEach(i=>open(i))});
+openChunks = (l,n,r=0) => openc = new Proxy(r ? chunks(l,n).reverse:chunks(l,n),{get:i => i.shift().forEach(i=>open(i))});
 range = (...a) => [...(function * RANGE(begin,end,interval=1){if(typeof end=="undefined"){end=begin;begin=0;};for(let i=begin;i<end;i+=interval){yield i;}})(...a)];
 chunks = (l,n=0) => n ? [...(function * CHUNKS(l,n){for(i of range(0,l.length,n)) yield l.slice(i,i+n);})(l,n)] : l
 urlq = a => $j.extend(false,{},...[...(function * URLQ ( a){ for ([i,j] of [...new URL(a).searchParams.entries()]) yield {[i]:j};})(a)]);
