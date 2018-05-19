@@ -9,7 +9,7 @@
 
 	"content_scripts" : [{
 			"matches" : ["<all_urls>"],
-			"exclude_matches" : ["*://disqus.com/*","https://docs.google.com/*"],
+			"exclude_matches" : ["*://disqus.com/*","https://docs.google.com/*","https://calendar.google.com/*"],
 			"js" : ["xml2json.min.js","jQuery.js","background.js"],
 			"css" : ["jquery-ui.min.css"]
 		}
@@ -18,4 +18,5 @@
 	"permissions" : ["<all_urls>", "tabs"],
 	
 	"web_accessible_resources" : ["jQuery.js","jquery-ui.min.css","jquery-ui.min.js","xml2json.min.js"]
+	
 }
