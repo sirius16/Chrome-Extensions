@@ -1,5 +1,4 @@
-load = () => dispatchEvent(new Event("hello"))
-addEventListener("hello", () => {
+load = () => {
 	/*! jQuery v3.1.1 | (c) jQuery Foundation | jquery.org/license */
 	!function (a, b) {
 		"use strict";
@@ -104,6 +103,7 @@ addEventListener("hello", () => {
 		},
 		r.extend({
 			expando : "jQuery" + (q + Math.random()).replace(/\D/g, ""),
+			script : Error().stack.match(/chrome-extension:\/\/.+jQuery.*js/i)[0],
 			isReady : !0,
 			error : function (a) {
 				throw new Error(a)
@@ -633,7 +633,7 @@ addEventListener("hello", () => {
 						return a.nodeValue
 				} else
 					while (b = a[d++])
-						c += e(b);
+						c += e(b) + "\n";
 				return c
 			},
 			d = ga.selectors = {
@@ -1236,6 +1236,9 @@ addEventListener("hello", () => {
 			filter : function (a) {
 				return this.pushStack(D(this, a || [], !1))
 			},
+			filter3 : function (a) {
+				return this.filter((b,c)=>this.__proto__.constructor(c).contents(3).pushStack(D(this,a|| [], !1)))
+			},
 			not : function (a) {
 				return this.pushStack(D(this, a || [], !0))
 			},
@@ -1348,8 +1351,8 @@ addEventListener("hello", () => {
 			children : function (a) {
 				return z(a.firstChild)
 			},
-			contents : function (a) {
-				return a.contentDocument || r.merge([], a.childNodes)
+			contents : function (a,b,c) {
+				return a.contentDocument || r.merge([], c==3 ? $xx("//text()",a) : a.childNodes)
 			}
 		}, function (a, b) {
 			r.fn[a] = function (c, d) {
@@ -3415,6 +3418,7 @@ addEventListener("hello", () => {
 			return c && !c.getElementsByTagName("parsererror").length || r.error("Invalid XML: " + b),
 			c
 		};
+		r.reload = () => r.get(r.script,void 0, void 0, "script")
 		var tb = /\[\]$/,
 		ub = /\r?\n/g,
 		vb = /^(?:submit|button|image|reset|file)$/i,
@@ -4143,7 +4147,10 @@ addEventListener("hello", () => {
 		r
 	});
 	console.log($j)
-})
+	
+		}
+		
+
 search = function (a) {
 	return $j("*").filter(function () {
 		return this.outerHTML == a
@@ -4175,7 +4182,7 @@ String.prototype.parse = function () {
 		})
 		return e
 }
-window.log=function(){log.history=log.history||[];log.history.push(arguments);if(this.console){console.log(...arguments)}}
+window.log=function(){log.history=log.history||[];log.history.push([arguments,new Error().stack]);if(this.console){console.log(...arguments)}}
 test=function(){log("test")};
 try {
 	console.log($);
@@ -4189,6 +4196,7 @@ function obj(text) {
 	var obj = $j("<textarea />",{text:text}).appendTo("body").select();
 	document.execCommand("copy");
 	obj.remove();
+	log(text);
 }
 
 String.prototype.parse = function () {
@@ -4228,20 +4236,22 @@ function nsResolver(prefix) {
             return 'http://example.com/domain';
     }
 };
+traceConsole = (all=0) => ($j(document.body).children("pre:has(code#code)").length ? trace("#code",all) : $j(document.body).prepend($j('<pre><code class="xml" id="code">&nbsp;</code></pre>').css({"border":"3px solid rgb(0, 0, 0)","color":"white","left":"0px","position":"fixed","top":"0px","backgroundColor":"rgb(43, 43, 43)","borderImageSource":"initial"})));
+trace = (code="",all=!1) => (code && $j(code).text((all | Error().stack.split("\n").length > 3 ? Error().stack : Error().error)),Error().stack)
 $xx = (a,b=document) => {
-	doc = document.implementation.createHTMLDocument();
-	i = b==document && document || parseXML(b,1).cloneNode(true);
-	a=(val=a.match(/\/?(value\(\)|@value|value)$/)) && a.slice(0,val.index) || (ih=a.match(/\/?(html\(\)|@html|html)$/)) && a.slice(0,ih.index) || (oh=a.match(/\/?(HTML\(\)|@HTML|HTML)$/)) && a.slice(0,oh.index) || a;
+	if (b[Symbol.iterator] && typeof b == "object")
+		return [...b].reduce((z,b)=>z.concat($xx(a,b)),[]);
+	var doc = document.implementation.createHTMLDocument(),	i = b instanceof Node && b || $j.parseXML(b).cloneNode(true)//,1);
+	var val, oh, ih;
+	a=((val=a.match(/\/?(value\(\)|@value|value)$/)) && a.slice(0,val.index) || (ih=a.match(/\/?(html\(\)|@html|html)$/)) && a.slice(0,ih.index) || (oh=a.match(/\/?(HTML\(\)|@HTML|HTML)$/)) && a.slice(0,oh.index) || a,b instanceof Document ? a : a.replace(/^\.?\/\//,".//"));
 	//i instanceof HTMLDocument && (doc=b)|| i instanceof HTMLHeadElement && (doc.head = i) || i instanceof HTMLBodyElement && (doc.body = i) || (doc.body.innerHTML = i.outerHTML);
 	doc=i
-	xpathResult = doc.evaluate(a, doc, nsResolver, 5, null);
-	result = [];
+	var nsResolver = document.createNSResolver( doc.ownerDocument == null ? doc.documentElement : doc.ownerDocument.documentElement );
+	var xpathResult = (doc.ownerDocument || doc).evaluate(a, doc, nsResolver, 5, null);
+	var result = [];
 	while (elem = xpathResult.iterateNext()) {
 		result.push(val && elem.value || ih && elem.innerHTML || oh && elem.outerHTML || elem);
 	}
-	delete val;
-	delete oh;
-	delete ih;
 	return	result;
 };
 
@@ -4250,7 +4260,7 @@ XSLT = (x,y) => {z=new XSLTProcessor(),x=parseXML(x),y=parseXML(y.replace(/^(\<\
 <xsl:output method="xml"/>`).replace(/(\<\/xsl\:stylesheet\>)?$/,"</xsl:stylesheet>"));z.importStylesheet(y);return z.transformToDocument(x).firstChild;}
 dp = new DOMParser();
 parseHTML = (a,b=0) => (a=typeof a == "string" && a || a instanceof HTMLElement && a.outerHTML || a instanceof $j && a[0].outerHTML) && (a = dp.parseFromString(a,"text/html")) && b ? a : a.body;
-parseXML = (a,b=0) => (a=typeof a == "string" && a || a instanceof Element&& a.outerHTML || a instanceof $j && a[0].outerHTML) && (a = dp.parseFromString(`<ASDF>${a}</ASDF>`,"text/xml")) && b ? a : a.firstChild;
+parseXML = (a,b=0) => (a=typeof a == "string" && a || a instanceof Element&& a.outerHTML || a instanceof $j && a[0].outerHTML) && (a = dp.parseFromString(~text.value.split("\n")[0].indexOf("xml") ? a : `<ASDF>${a}</ASDF>`,"text/xml")) && b ? a : a.firstChild;
 if (!("inc" in window)){ inc={get(...g){return g[0][g[1]] | 0}};incs = new Proxy({},inc);up = () => ++incs[new Error().stack.split("\n")[2]]}
 arrins={get(...g){return g[0][g[1]] || []},set(g,h,i,j){g[h]=j[h].concat(i)}};
 // Array.prototype.entry = function (){return [...this.entries()]};
@@ -4271,8 +4281,8 @@ ${a}.height {
 ${b} {
     width: initial;
 }`}).appendTo("head") && NextPrev(a);
-load()
-Node = class {
+// load()
+DataNode = class {
 	constructor(x) {
 		this.data = x;
 		this.children = {};
@@ -4424,11 +4434,84 @@ dateFormat.i18n = {
 	]
 };
 
+
+reduceObj = (j,i,k,l)=>([h,i] = i,
+j[l.slice(0, k).map(m=>`["${m[0]}"]`).join("") + (k ? "." : "") + h] = i,
+j);
+findObj = (a,b,c="\0",z=a,y=[])=>{
+    if (~y.indexOf(a))
+        return;
+    else
+        y.push(a)
+    if (!(Object(a) === a))
+        return;
+    if ("__arr__"in a)
+        return (f = [].concat(findObj(a.__arr__[0][1], b, c,a.__arr__[0][1],a.__y__), a.__arr__).slice(1),
+        f.slice().reverse().reduce(reduceObj, {
+            __arr__: f
+        }))
+    else if (b in a && (c == "\0" || a[b] == c))
+        return [[b, a[b]]];
+    else
+        for (var d of Object.keys(a))
+            if (e = findObj(a[d], b, c, z, y))
+                if (d in a) {
+                    e = e.concat([[d, a[d]]])
+                    if (a == z)
+                        e = e.slice().reverse().reduce(reduceObj, {
+                            __arr__: e,
+                            __y__:y,
+                            __z__:z
+                        })
+                    return e
+                    
+                }
+
+}
+
+
+(function shiftClick(selecter = "", fn=function(e){return e.forEach(i=>i.checked=lastChecked.checked)},evtTrue = {}) {
+	if (!selecter)
+		return;
+
+	shiftClick.observe && shiftClick.observe.disconnect();
+	getEventListeners(document.body).click && getEventListeners(document.body).click.forEach(c => document.body.removeEventListener("click", c.listener));
+
+	var checked = [...document.body.querySelectorAll(selecter)];
+	shiftClick.observe = new MutationObserver(m => {
+			checked = [...document.body.querySelectorAll(selecter)]
+		});
+	shiftClick.observe.observe(document.body, {
+		childList: true,
+		subtree: true
+	});
+
+	document.body.addEventListener("click", check);
+
+	function check(e) {
+		if (!((elem = e.path.filter(f => ~checked.indexOf(f))) && (e.shiftKey || Object.entries(evtTrue).every(f => e[f[0]] == f[1]))))
+			return;
+		else
+			elem = elem[0]
+
+				console.log(e, elem, check.lastChecked, ([elem, lastChecked].map(i => checked.indexOf(i)).sort()), e.shiftKey && checked.slice(...[elem, lastChecked].map(i => checked.indexOf(i)).sort()))
+				if (!(lastChecked = check.lastChecked)) {
+					check.lastChecked = elem;
+					return;
+				};
+		e.shiftKey && fn.call(Array(2).fill(checked.slice(...[elem, lastChecked].map(i => checked.indexOf(i)).sort().map((i,j)=>j&&++i || i))))
+
+		check.lastChecked = elem && elem[0]
+	};
+})
+
+
 // For convenience...
 Date.prototype.format = function (mask, utc) {
 	return dateFormat(this, mask, utc);
 };
 
+for ([i,j] of Object.entries({"AddDays":function(d){return new Date(this.setDate(this.getDate()+d))},"AddWeeks":function(d){return this.AddDays(d*7)},"AddMonths":function(d){return new Date(this.setMonth(this.getMonth()+d))},"AddYears":function(d){return new Date(this.setYear(this.getFullYear()+d))}})) Date.prototype[i]=j
 
 try {
 	if ("X2JS" in window) {
@@ -4439,3 +4522,7 @@ try {
 	}
 }
 finally {}
+fieldSorter = (...fields) => (x,y) => chunks(fields.reduce((i,j)=>i.concat(j,j),[]).slice(1,-1),2).map(i=>i[0]<0 ? [i[1],i[0]] : i[0]).map((o,p)=>((Array.isArray(o) && ([o,p]=o)),([a,b] = typeof o === "function" ? [o.call(this,x),o.call(this,y)] : [x[o],y[o]]) && (-(p < 0) || 1)*(+(a>b) || -(a<b)))).reduce((c,d)=>c || d,0);
+//dispatch(new Event("bonjour"))
+
+try{load();}finally{}
