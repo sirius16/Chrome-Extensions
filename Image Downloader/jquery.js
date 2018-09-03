@@ -103,7 +103,7 @@ load = () => {
 		},
 		r.extend({
 			expando : "jQuery" + (q + Math.random()).replace(/\D/g, ""),
-			script : Error().stack.match(/chrome-extension:\/\/.+jQuery.*js/i)[0],
+			script : Error().stack.match(/chrome-extension:\/\/.+jQuery.*js/i) && Error().stack.match(/chrome-extension:\/\/.+jQuery.*js/i)[0],
 			isReady : !0,
 			error : function (a) {
 				throw new Error(a)
