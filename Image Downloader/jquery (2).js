@@ -4244,7 +4244,27 @@ $x = (a,b=document) => {
 	delete ih;
 	return	result;
 };
-
+$xx = (a,b=document) => {
+	if (b[Symbol.iterator] && typeof b == "object")
+		return [...b].reduce((z,b)=>z.concat($xx(a,b)),[]);
+	var doc = document.implementation.createHTMLDocument(),	i = b instanceof Node && b || $j.parseXML(b).cloneNode(true)//,1);
+	var val, oh, ih;
+	a=a.replaceMap({
+    [/\/?(value\(\)|@value|value)/.source]: b => (val = b, ""),
+        [/\/?(html\(\)|@html|html)/.source]: b => (ih = b, ""),
+        [/\/?(HTML\(\)|@HTML|HTML)/.source]: b => (oh = b, "")
+});
+	a = a,b instanceof Document ? a : a.replace(/^\.?\/\//,".//");
+	//i instanceof HTMLDocument && (doc=b)|| i instanceof HTMLHeadElement && (doc.head = i) || i instanceof HTMLBodyElement && (doc.body = i) || (doc.body.innerHTML = i.outerHTML);
+	doc=i
+	var nsResolver = document.createNSResolver( doc.ownerDocument == null ? doc.documentElement : doc.ownerDocument.documentElement );
+	var xpathResult = (doc.ownerDocument || doc).evaluate(a, doc, nsResolver, 5, null);
+	var result = [];
+	while (elem = xpathResult.iterateNext()) {
+		result.push(val && elem.value || ih && elem.innerHTML || oh && elem.outerHTML || elem);
+	}
+	return	result;
+}
 XSLT = (x,y) => {z=new XSLTProcessor(),x=parseXML(x),y=parseXML(y.replace(/^(\<\?xml\ version\=\"1\.0\"\?\>\s*\<xsl\:stylesheet\ xmlns\:xsl\=\"http\:\/\/www\.w3\.org\/1999\/XSL\/Transform\"\ version\=\"1\.0\"\>\s*\<xsl\:output\ method\=\"xml\"\/\>)?/,`<?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="xml"/>`).replace(/(\<\/xsl\:stylesheet\>)?$/,"</xsl:stylesheet>"));z.importStylesheet(y);return z.transformToDocument(x).firstChild;}

@@ -76,6 +76,10 @@
 		"12": {
 			"description": "Open to MySMS",
 			"global": true
+		},
+		"13": {
+			"description": "Open to Play Music",
+			"global": true
 		}
 	}
 }

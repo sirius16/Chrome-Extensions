@@ -9,9 +9,9 @@
 	i = 0;
 	e = e.replace(/%s/g, function (x) {
 			return n[i] ? n[i++] : x;
-		})
-		return e
-}
+		});
+		return e;
+};
 
 chrome.omnibox.onInputChanged.addListener(function (text, suggest) {
 	suggest([{
@@ -34,7 +34,7 @@ chrome.omnibox.onInputEntered.addListener(function (text) {
 		"windowType" : "normal"
 	}, function (tabsList) {
 		words = text.split(" ").map(function (j, i) {
-				j = j.replace("chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/suspended.html#uri=", "")
+				j = j.replace("chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/suspended.html#uri=", "");
 					if (j.match(/^-/))
 						j = "^((?!" + j.slice(1) + ").)*$";
 					j = j.replace(/^#/, "http://");
@@ -44,9 +44,9 @@ chrome.omnibox.onInputEntered.addListener(function (text) {
 					j = j.replace(/[^/]/g, function (x) {
 							return "[%s]".parse(x);
 						});
-				return "(?=.*(" + j + "))"
-			}).join("").replace(/[/]/gi, "\/")
-			console.log(words)
+				return "(?=.*(" + j + "))";
+			}).join("").replace(/[/]/gi, "\/");
+			console.log(words);
 			tabs = $j(tabsList).map(function (i, j) {
 				k = j.title + " " + j.url;
 				if (k.match(new RegExp(words, "i"))) {
@@ -56,7 +56,7 @@ chrome.omnibox.onInputEntered.addListener(function (text) {
 			}).toArray();
 		console.log(tabs);
 		console.log(tabs.map(function (j, i) {
-				return i + "\t" + j.title
+				return i + "\t" + j.title;
 			}).join("\n"));
 		chrome.windows.create({
 			tabId : tabs[0].id

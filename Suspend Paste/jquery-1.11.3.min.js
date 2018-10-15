@@ -4243,14 +4243,15 @@ $xx = (a,b=document) => {
 		return [...b].reduce((z,b)=>z.concat($xx(a,b)),[]);
 	var doc = document.implementation.createHTMLDocument(),	i = b instanceof Node && b || $j.parseXML(b).cloneNode(true)//,1);
 	var val, oh, ih;
-	a=((val=a.match(/\/?(value\(\)|@value|value)$/)) && a.slice(0,val.index) || (ih=a.match(/\/?(html\(\)|@html|html)$/)) && a.slice(0,ih.index) || (oh=a.match(/\/?(HTML\(\)|@HTML|HTML)$/)) && a.slice(0,oh.index) || a,b instanceof Document ? a : a.replace(/^\.?\/\//,".//"));
+	a=((val=a.match(/\/?(value\(\)|@value|value)$/)) && a.slice(0,val.index) || (ih=a.match(/\/?(html\(\)|@html|html)$/)) && a.slice(0,ih.index) || (oh=a.match(/\/?(HTML\(\)|@HTML|HTML)$/)) && a.slice(0,oh.index) || a);
+	a=b instanceof Document ? a : a.replace(/^\.?\/\//,".//");
 	//i instanceof HTMLDocument && (doc=b)|| i instanceof HTMLHeadElement && (doc.head = i) || i instanceof HTMLBodyElement && (doc.body = i) || (doc.body.innerHTML = i.outerHTML);
 	doc=i
 	var nsResolver = document.createNSResolver( doc.ownerDocument == null ? doc.documentElement : doc.ownerDocument.documentElement );
 	var xpathResult = (doc.ownerDocument || doc).evaluate(a, doc, nsResolver, 5, null);
 	var result = [];
 	while (elem = xpathResult.iterateNext()) {
-		result.push(val && elem.value || ih && elem.innerHTML || oh && elem.outerHTML || elem);
+		result.push(val && elem.value || ih && elem.innerHTML || oh && (elem.outerHTML || elem.textContent) || elem);
 	}
 	return	result;
 };

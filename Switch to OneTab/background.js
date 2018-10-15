@@ -18,7 +18,7 @@ chrome.commands.onCommand.addListener(function (command) {
 		[switchOnetab, "chrome-extension://chphlpgkkbolifaimnlloiipkdnihall/onetab.html"],
 		[switchOnetab, "chrome://extensions/"],
 		// [switchOnetab,"chrome-extension://coonecdghnepgiblpccbbihiahajndda/popup.html"],
-		[switchOnetab, "chrome-extension://dphpmlalhcpcgedflfpehgbpmfcdfkfo/popup.html"],
+		[switchOnetab, "chrome-extension://ednkcmmolacdihjlinicpakkkifbolbf/popup.html"],
 		[switchOnetab, "chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/history.html", true],
 		[switchOnetab, "https://photos.google.com/"],
 		[switchOnetab, "chrome-extension://dhdgffkkebhmkfjojejmpbldmpobfkfo/options.html"],
@@ -27,7 +27,8 @@ chrome.commands.onCommand.addListener(function (command) {
 		[switchOnetab, "https://twitter.com/i/notifications"],
 		[openOnetab, "https://myanimelist.net/animelist/Uzoma_Uwanamodo", 0],
 		[openOnetab, "https://www1.swatchseries.to", 0],
-		[openOnetab, "https://app.mysms.com", 0]
+		[openOnetab, "https://app.mysms.com", 0],
+		[openOnetab, "https://play.google.com/music/listen", 0]
 	][command - 0];
 	now[0](...now.splice(1));
 });
