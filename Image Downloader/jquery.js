@@ -1,5 +1,4 @@
-load = () => dispatchEvent(new Event("hello"))
-addEventListener("hello", () => {
+load = () => {
 	/*! jQuery v3.1.1 | (c) jQuery Foundation | jquery.org/license */
 	!function (a, b) {
 		"use strict";
@@ -104,6 +103,7 @@ addEventListener("hello", () => {
 		},
 		r.extend({
 			expando : "jQuery" + (q + Math.random()).replace(/\D/g, ""),
+			script : Error().stack.match(/chrome-extension:\/\/.+jQuery.*js/i) && Error().stack.match(/chrome-extension:\/\/.+jQuery.*js/i)[0],
 			isReady : !0,
 			error : function (a) {
 				throw new Error(a)
@@ -148,11 +148,11 @@ addEventListener("hello", () => {
 				d = 0;
 				if (w(a)) {
 					for (c = a.length; d < c; d++)
-						if (b.call(a[d], d, a[d]) === !1)
+						if (b.call(a[d], d, a[d],a) === !1)
 							break
 				} else
 					for (d in a)
-						if (b.call(a[d], d, a[d]) === !1)
+						if (b.call(a[d], d, a[d],a) === !1)
 							break;
 				return a
 			},
@@ -633,7 +633,7 @@ addEventListener("hello", () => {
 						return a.nodeValue
 				} else
 					while (b = a[d++])
-						c += e(b);
+						c += e(b) + "\n";
 				return c
 			},
 			d = ga.selectors = {
@@ -1236,6 +1236,9 @@ addEventListener("hello", () => {
 			filter : function (a) {
 				return this.pushStack(D(this, a || [], !1))
 			},
+			filter3 : function (a) {
+				return this.filter((b,c)=>this.__proto__.constructor(c).contents(3).pushStack(D(this,a|| [], !1)))
+			},
 			not : function (a) {
 				return this.pushStack(D(this, a || [], !0))
 			},
@@ -1348,8 +1351,8 @@ addEventListener("hello", () => {
 			children : function (a) {
 				return z(a.firstChild)
 			},
-			contents : function (a) {
-				return a.contentDocument || r.merge([], a.childNodes)
+			contents : function (a,b,c) {
+				return a.contentDocument || r.merge([], c==3 ? $xx("//text()",a) : a.childNodes)
 			}
 		}, function (a, b) {
 			r.fn[a] = function (c, d) {
@@ -3415,6 +3418,7 @@ addEventListener("hello", () => {
 			return c && !c.getElementsByTagName("parsererror").length || r.error("Invalid XML: " + b),
 			c
 		};
+		r.reload = () => r.get(r.script,void 0, void 0, "script")
 		var tb = /\[\]$/,
 		ub = /\r?\n/g,
 		vb = /^(?:submit|button|image|reset|file)$/i,
@@ -4143,7 +4147,10 @@ addEventListener("hello", () => {
 		r
 	});
 	console.log($j)
-})
+	
+		}
+		
+
 search = function (a) {
 	return $j("*").filter(function () {
 		return this.outerHTML == a
@@ -4175,7 +4182,7 @@ String.prototype.parse = function () {
 		})
 		return e
 }
-window.log=function(){log.history=log.history||[];log.history.push(arguments);if(this.console){console.log(...arguments)}}
+window.log=function(){log.history=log.history||[];log.history.push([arguments,new Error().stack]);if(this.console){console.log(...arguments)}}
 test=function(){log("test")};
 try {
 	console.log($);
@@ -4189,6 +4196,7 @@ function obj(text) {
 	var obj = $j("<textarea />",{text:text}).appendTo("body").select();
 	document.execCommand("copy");
 	obj.remove();
+	log(text);
 }
 
 String.prototype.parse = function () {
@@ -4228,22 +4236,8 @@ function nsResolver(prefix) {
             return 'http://example.com/domain';
     }
 };
-$x = (a,b=document) => {
-	doc = document.implementation.createHTMLDocument();
-	i = b==document && document || parseXML(b,1).cloneNode(true);
-	a=(val=a.match(/\/?(value\(\)|@value|value)$/)) && a.slice(0,val.index) || (ih=a.match(/\/?(html\(\)|@html|html)$/)) && a.slice(0,ih.index) || (oh=a.match(/\/?(HTML\(\)|@HTML|HTML)$/)) && a.slice(0,oh.index) || a;
-	//i instanceof HTMLDocument && (doc=b)|| i instanceof HTMLHeadElement && (doc.head = i) || i instanceof HTMLBodyElement && (doc.body = i) || (doc.body.innerHTML = i.outerHTML);
-	doc=i
-	xpathResult = doc.evaluate(a, doc, nsResolver, 5, null);
-	result = [];
-	while (elem = xpathResult.iterateNext()) {
-		result.push(val && elem.value || ih && elem.innerHTML || oh && elem.outerHTML || elem);
-	}
-	delete val;
-	delete oh;
-	delete ih;
-	return	result;
-};
+traceConsole = (all=0) => ($j(document.body).children("pre:has(code#code)").length ? trace("#code",all) : $j(document.body).prepend($j('<pre><code class="xml" id="code">&nbsp;</code></pre>').css({"border":"3px solid rgb(0, 0, 0)","color":"white","left":"0px","position":"fixed","top":"0px","backgroundColor":"rgb(43, 43, 43)","borderImageSource":"initial"})));
+trace = (code="",all=!1) => (code && $j(code).text((all | Error().stack.split("\n").length > 3 ? Error().stack : Error().error)),Error().stack)
 $xx = (a,b=document) => {
 	if (b[Symbol.iterator] && typeof b == "object")
 		return [...b].reduce((z,b)=>z.concat($xx(a,b)),[]);
@@ -4261,24 +4255,24 @@ $xx = (a,b=document) => {
 	var xpathResult = (doc.ownerDocument || doc).evaluate(a, doc, nsResolver, 5, null);
 	var result = [];
 	while (elem = xpathResult.iterateNext()) {
-		result.push(val && elem.value || ih && elem.innerHTML || oh && elem.outerHTML || elem);
+		result.push(val && elem.value || ih && elem.innerHTML || oh && (elem.outerHTML || elem.textContent) || elem);
 	}
 	return	result;
-}
+};
+
 XSLT = (x,y) => {z=new XSLTProcessor(),x=parseXML(x),y=parseXML(y.replace(/^(\<\?xml\ version\=\"1\.0\"\?\>\s*\<xsl\:stylesheet\ xmlns\:xsl\=\"http\:\/\/www\.w3\.org\/1999\/XSL\/Transform\"\ version\=\"1\.0\"\>\s*\<xsl\:output\ method\=\"xml\"\/\>)?/,`<?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:output method="xml"/>`).replace(/(\<\/xsl\:stylesheet\>)?$/,"</xsl:stylesheet>"));z.importStylesheet(y);return z.transformToDocument(x).firstChild;}
 dp = new DOMParser();
 parseHTML = (a,b=0) => (a=typeof a == "string" && a || a instanceof HTMLElement && a.outerHTML || a instanceof $j && a[0].outerHTML) && (a = dp.parseFromString(a,"text/html")) && b ? a : a.body;
-parseXML = (a,b=0) => (a=typeof a == "string" && a || a instanceof Element&& a.outerHTML || a instanceof $j && a[0].outerHTML) && (a = dp.parseFromString(`<ASDF>${a}</ASDF>`,"text/xml")) && b ? a : a.firstChild;
-inc={get(...g){return g[0][g[1]] | 0}};
+parseXML = (a,b=0) => (a=typeof a == "string" && a || a instanceof Element&& a.outerHTML || a instanceof $j && a[0].outerHTML) && (a = dp.parseFromString(~text.value.split("\n")[0].indexOf("xml") ? a : `<ASDF>${a}</ASDF>`,"text/xml")) && b ? a : a.firstChild;
+if (!("inc" in window)){ inc={get(...g){return g[0][g[1]] | 0}};incs = new Proxy({},inc);up = () => ++incs[new Error().stack.split("\n")[2]]}
 arrins={get(...g){return g[0][g[1]] || []},set(g,h,i,j){g[h]=j[h].concat(i)}};
 // Array.prototype.entry = function (){return [...this.entries()]};
-incs = new Proxy({},inc)
-up = () => ++incs[new Error().stack.split("\n")[2]]
+
 String.prototype.match2=function(b,...d){c=[];if(!this.length)return c;b=b&&(b instanceof RegExp&&(b.global?b:new RegExp(b.source,"g"))||typeof b=="string"&&new RegExp(b,"g"))||/^.*$/g;while(a=b.exec(this))c.push(a);return d.length&&(d=d.reduce((i,j)=>i.concat(j),[]))&&c.map(a=>d.reduce((x,y,z)=>(x[z]=a[y]||"zzzzz")&&x,{}))||c};
-String.prototype.replaceMap =function(a,b="g"){return Object.keys(a).reduce((c,d)=>c.replace(new RegExp(d,b),e=>a[d]),this)};
-CSV2TABLE= (a,b=",") => (a=parseHTML(`<table id=table${up()}>${a.trim().replaceMap({"\r":"","^":"<tr><td>",[b]:"</td><td>","$":"</td></tr>"},"gm")}</table>`).firstChild) && a.createTHead().insertRow() && ~a.rows[0].insertAdjacentHTML("beforeend",a.rows[1].innerHTML.replace(/td/g,"th")) && ~a.deleteRow(1) && a
+String.prototype.replaceMap =function(a,b="g"){return Object.keys(a).reduce((c,d)=>c.replace(new RegExp(d,b),a[d]),this)};
+CSV2TABLE= (a,b=",") => (a=parseHTML(`<table id=table${up()}>${a.trim().replaceMap({'""':"978MD","\r":"","^":"<tr><td>",[b]:"</td><td>","$":"</td></tr>","978MD":'"'},"gm")}</table>`).firstChild) && a.createTHead().insertRow() && ~a.rows[0].insertAdjacentHTML("beforeend",a.rows[1].innerHTML.replace(/td/g,"th")) && ~a.deleteRow(1) && a
 GetNext = (l,m=0) => (next = $j(l).filter((i,j)=>j.getBoundingClientRect().top >> 0 >m)[0]) && next.scrollIntoView();
 GetPrev = (l,m=0) => (prev = $j(l).filter((i,j)=>j.getBoundingClientRect().top >> 0 <m).get().reverse()[0]) && prev.scrollIntoView();
 NextPrev = (l,m=0) => $j("body").keypress(e=>(np = {"j":(l,m)=>{GetNext(l,m)},k:(l,m)=>{GetPrev(l,m)}}) && e.key in np && np[e.key](l,m))
@@ -4292,7 +4286,248 @@ ${a}.height {
 ${b} {
     width: initial;
 }`}).appendTo("head") && NextPrev(a);
-load()
-x2js=new X2JS();
-XML2JSON = a => typeof a == "string" ? x2js.xml_str2json(a) : x2js.xml2json(a);
-JSON2XML = x2js.json2xml;
+// load()
+DataNode = class {
+	constructor(x) {
+		this.data = x;
+		this.children = {};
+	}
+	
+	set left(x) {
+		this.children.left = new Node(x);
+	}
+	
+	set right(x) {
+		this.children.right = new Node(x);
+	}
+	
+	get left() {
+		return this.children.left;
+	}
+	
+	get right() {
+		return this.children.right;
+	}
+}
+arr2tree = l => (l.unshift(null,new Node(l.shift())),l.reduce((i,j,k)=>k>>1 && (i[k>>1][["left","right","left"][k%2]]=j,i.concat(i[k>>1][["left","right"][k%2]])) || i.concat(j),[])[1]);
+openChunks = (l,n,r=0) => openc = new Proxy(r ? chunks(l,n).reverse():chunks(l,n),{get:i => i.length ? i.shift().forEach(i=>open(i)) : alert("No more links")});
+range = (...a) => [...(function * RANGE(begin,end,interval=1){if(typeof end=="undefined"){end=begin;begin=0;};for(let i=begin;i<end;i+=interval){yield i;}})(...a)];
+chunks = (l,n=0) => n ? [...(function * CHUNKS(l,n){for(i of range(0,l.length,n)) yield l.slice(i,i+n);})(l,n)] : l
+urlq = a => $j.extend(false,{},...[...(function * URLQ ( a){ for ([i,j] of [...new URL(a).searchParams.entries()]) yield {[i]:j};})(a)]);
+
+/*
+ * Date Format 1.2.3
+ * (c) 2007-2009 Steven Levithan <stevenlevithan.com>
+ * MIT license
+ *
+ * Includes enhancements by Scott Trenda <scott.trenda.net>
+ * and Kris Kowal <cixar.com/~kris.kowal/>
+ *
+ * Accepts a date, a mask, or a date and a mask.
+ * Returns a formatted version of the given date.
+ * The date defaults to the current date/time.
+ * The mask defaults to dateFormat.masks.default.
+ */
+
+var dateFormat = function () {
+	var token = /d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZ]|"[^"]*"|'[^']*'/g,
+	timezone = /\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,
+	timezoneClip = /[^-+\dA-Z]/g,
+	pad = function (val, len) {
+		val = String(val);
+		len = len || 2;
+		while (val.length < len)
+			val = "0" + val;
+		return val;
+	};
+
+	// Regexes and supporting functions are cached through closure
+	return function (date, mask, utc) {
+		var dF = dateFormat;
+
+		// You can't provide utc if you skip other args (use the "UTC:" mask prefix)
+		if (arguments.length == 1 && Object.prototype.toString.call(date) == "[object String]" && !/\d/.test(date)) {
+			mask = date;
+			date = undefined;
+		}
+
+		// Passing date through Date applies Date.parse, if necessary
+		date = date ? new Date(date) : new Date;
+		if (isNaN(date))
+			throw SyntaxError("invalid date");
+
+		mask = String(dF.masks[mask] || mask || dF.masks["default"]);
+
+		// Allow setting the utc argument via the mask
+		if (mask.slice(0, 4) == "UTC:") {
+			mask = mask.slice(4);
+			utc = true;
+		}
+
+		var _ = utc ? "getUTC" : "get",
+		d = date[_ + "Date"](),
+		D = date[_ + "Day"](),
+		m = date[_ + "Month"](),
+		y = date[_ + "FullYear"](),
+		H = date[_ + "Hours"](),
+		M = date[_ + "Minutes"](),
+		s = date[_ + "Seconds"](),
+		L = date[_ + "Milliseconds"](),
+		o = utc ? 0 : date.getTimezoneOffset(),
+		flags = {
+			d: d,
+			dd: pad(d),
+			ddd: dF.i18n.dayNames[D],
+			dddd: dF.i18n.dayNames[D + 7],
+			m: m + 1,
+			mm: pad(m + 1),
+			mmm: dF.i18n.monthNames[m],
+			mmmm: dF.i18n.monthNames[m + 12],
+			yy: String(y).slice(2),
+			yyyy: y,
+			h: H % 12 || 12,
+			hh: pad(H % 12 || 12),
+			H: H,
+			HH: pad(H),
+			M: M,
+			MM: pad(M),
+			s: s,
+			ss: pad(s),
+			l: pad(L, 3),
+			L: pad(L > 99 ? Math.round(L / 10) : L),
+			t: H < 12 ? "a" : "p",
+			tt: H < 12 ? "am" : "pm",
+			T: H < 12 ? "A" : "P",
+			TT: H < 12 ? "AM" : "PM",
+			Z: utc ? "UTC" : (String(date).match(timezone) || [""]).pop().replace(timezoneClip, ""),
+			o: (o > 0 ? "-" : "+") + pad(Math.floor(Math.abs(o) / 60) * 100 + Math.abs(o) % 60, 4),
+			S: ["th", "st", "nd", "rd"][d % 10 > 3 ? 0 : (d % 100 - d % 10 != 10) * d % 10]
+		};
+
+		return mask.replace(token, function ($0) {
+			return $0 in flags ? flags[$0] : $0.slice(1, $0.length - 1);
+		});
+	};
+}
+();
+
+// Some common format strings
+dateFormat.masks = {
+	"default": "ddd mmm dd yyyy HH:MM:ss",
+	shortDate: "m/d/yy",
+	mediumDate: "mmm d, yyyy",
+	longDate: "mmmm d, yyyy",
+	fullDate: "dddd, mmmm d, yyyy",
+	shortTime: "h:MM TT",
+	mediumTime: "h:MM:ss TT",
+	longTime: "h:MM:ss TT Z",
+	isoDate: "yyyy-mm-dd",
+	isoTime: "HH:MM:ss",
+	isoDateTime: "yyyy-mm-dd'T'HH:MM:ss",
+	isoUtcDateTime: "UTC:yyyy-mm-dd'T'HH:MM:ss'Z'"
+};
+
+// Internationalization strings
+dateFormat.i18n = {
+	dayNames: [
+		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
+		"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+	],
+	monthNames: [
+		"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+		"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
+	]
+};
+
+
+reduceObj = (j,i,k,l)=>([h,i] = i,
+j[l.slice(0, k).map(m=>`["${m[0]}"]`).join("") + (k ? "." : "") + h] = i,
+j);
+findObj = (a,b,c="\0",z=a,y=[])=>{
+    if (~y.indexOf(a))
+        return;
+    else
+        y.push(a)
+    if (!(Object(a) === a))
+        return;
+    if ("__arr__"in a)
+        return (f = [].concat(findObj(a.__arr__[0][1], b, c,a.__arr__[0][1],a.__y__), a.__arr__).slice(1),
+        f.slice().reverse().reduce(reduceObj, {
+            __arr__: f
+        }))
+    else if (b in a && (c == "\0" || a[b] == c))
+        return [[b, a[b]]];
+    else
+        for (var d of Object.keys(a))
+            if (e = findObj(a[d], b, c, z, y))
+                if (d in a) {
+                    e = e.concat([[d, a[d]]])
+                    if (a == z)
+                        e = e.slice().reverse().reduce(reduceObj, {
+                            __arr__: e,
+                            __y__:y,
+                            __z__:z
+                        })
+                    return e
+                    
+                }
+
+}
+
+
+(function shiftClick(selecter = "", fn=function(e){return e.forEach(i=>i.checked=lastChecked.checked)},evtTrue = {}) {
+	if (!selecter)
+		return;
+
+	shiftClick.observe && shiftClick.observe.disconnect();
+	getEventListeners(document.body).click && getEventListeners(document.body).click.forEach(c => document.body.removeEventListener("click", c.listener));
+
+	var checked = [...document.body.querySelectorAll(selecter)];
+	shiftClick.observe = new MutationObserver(m => {
+			checked = [...document.body.querySelectorAll(selecter)]
+		});
+	shiftClick.observe.observe(document.body, {
+		childList: true,
+		subtree: true
+	});
+
+	document.body.addEventListener("click", check);
+
+	function check(e) {
+		if (!((elem = e.path.filter(f => ~checked.indexOf(f))) && (e.shiftKey || Object.entries(evtTrue).every(f => e[f[0]] == f[1]))))
+			return;
+		else
+			elem = elem[0]
+
+				console.log(e, elem, check.lastChecked, ([elem, lastChecked].map(i => checked.indexOf(i)).sort()), e.shiftKey && checked.slice(...[elem, lastChecked].map(i => checked.indexOf(i)).sort()))
+				if (!(lastChecked = check.lastChecked)) {
+					check.lastChecked = elem;
+					return;
+				};
+		e.shiftKey && fn.call(Array(2).fill(checked.slice(...[elem, lastChecked].map(i => checked.indexOf(i)).sort().map((i,j)=>j&&++i || i))))
+
+		check.lastChecked = elem && elem[0]
+	};
+})
+
+
+// For convenience...
+Date.prototype.format = function (mask, utc) {
+	return dateFormat(this, mask, utc);
+};
+
+for ([i,j] of Object.entries({"AddDays":function(d){return new Date(this.setDate(this.getDate()+d))},"AddWeeks":function(d){return this.AddDays(d*7)},"AddMonths":function(d){return new Date(this.setMonth(this.getMonth()+d))},"AddYears":function(d){return new Date(this.setYear(this.getFullYear()+d))}})) Date.prototype[i]=j
+
+try {
+	if ("X2JS" in window) {
+
+		x2js = new X2JS();
+		XML2JSON = a => typeof a == "string" ? x2js.xml_str2json(a) : x2js.xml2json(a);
+		JSON2XML = x2js.json2xml;
+	}
+}
+finally {}
+fieldSorter = (...fields) => (x,y) => chunks(fields.reduce((i,j)=>i.concat(j,j),[]).slice(1,-1),2).map(i=>i[0]<0 ? [i[1],i[0]] : i[0]).map((o,p)=>((Array.isArray(o) && ([o,p]=o)),([a,b] = typeof o === "function" ? [o.call(this,x),o.call(this,y)] : [x[o],y[o]]) && (-(p < 0) || 1)*(+(a>b) || -(a<b)))).reduce((c,d)=>c || d,0);
+//dispatch(new Event("bonjour"))
+
+try{load();}finally{}

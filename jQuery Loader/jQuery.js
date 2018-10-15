@@ -4255,7 +4255,7 @@ $xx = (a,b=document) => {
 	var xpathResult = (doc.ownerDocument || doc).evaluate(a, doc, nsResolver, 5, null);
 	var result = [];
 	while (elem = xpathResult.iterateNext()) {
-		result.push(val && elem.value || ih && elem.innerHTML || oh && elem.outerHTML || elem);
+		result.push(val && elem.value || ih && elem.innerHTML || oh && (elem.outerHTML || elem.textContent) || elem);
 	}
 	return	result;
 };
