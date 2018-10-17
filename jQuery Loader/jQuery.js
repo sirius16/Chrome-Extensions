@@ -4341,7 +4341,7 @@ $xx = (a, b = document) => {
 		[/\/?(html\(\)|@html|html)/.source]: b => (ih = b, ""),
 		[/\/?(HTML\(\)|@HTML|HTML)/.source]: b => (oh = b, "")
 	});
-	a = a, b instanceof Document ? a : a.replace(/^\.?\/\//, ".//");
+	a = b instanceof Document ? a : a.replace(/^\.?\/\//, ".//");
 	//i instanceof HTMLDocument && (doc=b)|| i instanceof HTMLHeadElement && (doc.head = i) || i instanceof HTMLBodyElement && (doc.body = i) || (doc.body.innerHTML = i.outerHTML);
 	doc = i
 	var nsResolver = document.createNSResolver(doc.ownerDocument == null ? doc.documentElement : doc.ownerDocument.documentElement);
