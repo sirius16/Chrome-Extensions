@@ -58,7 +58,9 @@ links = [];
 
 
 chrome.runtime.onMessage.addListener((r, s) => {
-	links = r;
+	log(r, s);
+	links = r || links;
+	log(links);
 	dispatchEvent(new Event("links"));
 });
 
@@ -72,12 +74,17 @@ chrome.omnibox.onInputChanged.addListener(function (text, suggest) {
 	}, function (tabs) {
 		chrome.tabs.sendMessage(tabs[0].id, "imglinks");
 	});
-	$j(window).one("links", e => suggest(links.filter(a => text.split(" ").every(b => a.content.match(new RegExp(b, "i")))).map(i => ({
+	$j(window).one("links", e => (log(e, (links.filter(a => text.split(" ").every(b => a.content.match(new RegExp(b, "i")))).map(i => ({
 		content: i.content,
 		description: $j("<div />", {
 			text: i.description
 		})[0].innerHTML
-	}))));
+	})))), suggest(links.filter(a => text.split(" ").every(b => a.content.match(new RegExp(b, "i")))).map(i => ({
+		content: i.content,
+		description: $j("<div />", {
+			text: i.description
+		})[0].innerHTML
+	})))));
 
 });
 
@@ -105,14 +112,14 @@ onDeterminingFilename = (i, suggest) => {
 				file = i.filename.split(".");
 				for (var j in file)
 					file[j] = file[j].trim();
-				extension = "" && file[1] && "." + file.pop();
+				extension = "" || file[1] && "." + file.pop();
 				file = b.description ? b.description.split(".") : file;
 				file = file.join("_");
 				file = b.description ? file + " - " + title.trim() : title.trim() + " " + file;
 				file = url + '/' + file.replace(/[^-a-z0-9+%!=]+/gi, " ").trim();
 				console.log(file, extension);
 				suggest({
-					filename: file + extension.replace(/:(large|small)/, ""),
+					filename: file + extension.replace(/[:_](large|small)/, ""),
 					conflictAction: "uniquify"
 				});
 			});

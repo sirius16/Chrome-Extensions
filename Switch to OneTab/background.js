@@ -28,7 +28,12 @@ chrome.commands.onCommand.addListener(function (command) {
 		[openOnetab, "https://myanimelist.net/animelist/Uzoma_Uwanamodo", 0],
 		[openOnetab, "https://www1.swatchseries.to", 0],
 		[openOnetab, "https://app.mysms.com", 0],
-		[openOnetab, "https://play.google.com/music/listen", 0]
+		[switchOnetab, "http://rmz/bookmarks_RMZ.html", 0],
+		[switchOnetab, "http://new16/new%20%2016.html"],
+		[switchDifferent, "https://app.grammarly.com/docs/new", "app.grammarly.com/ddocs"],
+		// [switchDifferent, "http://uwana/H's%20POD%20[00001-00947]190705150722.PDF", "uwana.H"],
+		[switchDifferent, "https://discordapp.com/channels/@me", "discordapp.com"],
+		[switchOnetab, "https://episodemailer.com/shows/my"]
 	][command - 0];
 	now[0](...now.splice(1));
 });
@@ -72,7 +77,11 @@ function switchOnetab(URL) {
 		} else {
 			chrome.tabs.create({
 				url: URL
-			}, i => { chrome.windows.update(i.windowId, { focused: !0 }) })
+			}, i => {
+				chrome.windows.update(i.windowId, {
+					focused: !0
+				})
+			})
 		}
 	});
 }
@@ -117,6 +126,54 @@ function openOnetab(URL) {
 			chrome.windows.create({
 				url: URL,
 				state: r ? "maximized" : "normal"
+			})
+		}
+	});
+}
+
+function switchDifferent(URL, regex) {
+	console.log("diff", r = arguments[2])
+	chrome.tabs.query({
+		"windowType": "normal"
+	}, function (tabsList) {
+		words = regex.split(" ").map(function (j, i) {
+			j = j.replace("chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/suspended.html#uri=", "")
+			if (j.match(/^-/))
+				j = "^((?!" + j.slice(1) + ").)*$";
+			j = j.replace(/^#/, "http://");
+			if (j.match(/^:/))
+				j = j.slice(1).match(/(?=(?:https?:[/]+)?(.*?)[/]).*/)[1];
+			if (j.match(/(https?|ftp|ssh|mailto):/))
+				j = j.replace(/[^/]/g, function (x) {
+					return "[%s]".parse(x);
+				});
+			return "(?=.*(" + j + "))"
+		}).join("").replace(/[/]/gi, "\/")
+		console.log(words)
+		tabs = $j(tabsList).map(function (i, j) {
+			k = j.title + " " + j.url;
+			if (k.match(new RegExp(words, "i"))) {
+				console.log(j);
+				return j;
+			}
+		}).toArray();
+		if (tabs.length) {
+			if (r)
+				chrome.tabs.reload(tabs[0].id);
+			chrome.tabs.update(tabs[0].id, {
+				"active": true
+			}, function (tab) {
+				chrome.windows.update(tab.windowId, {
+					"focused": true
+				});
+			});
+		} else {
+			chrome.tabs.create({
+				url: URL
+			}, i => {
+				chrome.windows.update(i.windowId, {
+					focused: !0
+				})
 			})
 		}
 	});

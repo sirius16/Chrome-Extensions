@@ -1,0 +1,154 @@
+{
+  "link_to_options": {
+    "message": "Optiones",
+    "description": "Label for button to options"
+  },
+  "extended_menu_label" : {
+    "message" : "Mas...",
+    "description": "Label for button that leads to the extended menu"
+  },
+  "options_call_to_action": {
+    "message": "Customize Your AddThis Sharing Menu",
+    "description": "Title for the options page"
+  },
+  "options_page_subtitle": {
+    "message": "Add and remove services, or change their order using the arrow buttons:",
+    "description": "Instructions for adding, removing, and re-ordering services"
+  },
+  "options_customize_page_all_services_title": {
+    "message": "All Available Services:",
+    "description": "A title for list of all possible services"
+  },
+  "options_customize_page_all_services_search_call": {
+    "message": "Find a Service",
+    "description": "A label for the search box that filters available services"
+  },
+  "options_customize_page_my_services_title": {
+    "message": "My Customized Services",
+    "description": "Title for the list of user-preferred services"
+  },
+  "options_customize_page_my_services_max_count": {
+    "message": "11 services max.",
+    "description": "Indicates that 11 services is the maximum amount that you can choose"
+  },
+  "options_add_button": {
+    "message": "Add",
+    "description": "Button that adds a service (short)"
+  },
+  "options_remove_button": {
+    "message": "Remove",
+    "description": "Button that removes a service (short)"
+  },
+  "options_save_changes": {
+    "message": "Save Changes",
+    "description": "Button for saving options changes"
+  },
+  "options_or": {
+    "message": "or",
+    "description": "Word for 'or'"
+  },
+  "options_reset": {
+    "message": "Reset services to default",
+    "description": "A button that resets service preferences to default"
+  },
+
+  "connect_accounts_title": {
+    "message": "Connect Accounts",
+    "description": "Title for options page for connecting personal accounts"
+  },
+
+  "connect_accounts_description": {
+    "message": "Connect your social media accounts to enable one-click sharing and other enhanced features:",
+    "description": "Description of preference page for connecting accounts"
+  },
+
+  "enable_account_connections": {
+    "message": "Enable Account Connections (Recommended):",
+    "description": "Option to enable account connections"
+  },
+
+  "connect_word": {
+    "message": "Connect",
+    "description": "Word for 'connect'"
+  },
+
+  "connecting_word": {
+    "message": "Connecting",
+    "description": "Word for 'connecting'"
+  },
+
+  "disconnect_word": {
+    "message": "Disconnect",
+    "description": "Word for 'disconnect'"
+  },
+  "more_options_title": {
+    "message": "More Options",
+    "description": "Title for 'more options' page"
+  },
+
+  "more_options_description": {
+    "message": "Select which sharing menu should be enabled in your browser:",
+    "description": "Description of more options page indicating to enable optional sharing menus"
+  },
+
+  "enable_context_menu": {
+    "message": "Enable Context Menu (right-click in any page)",
+    "description": "Option to enable the context menu"
+  },
+
+  "enable_context_menu_search": {
+    "message": "Enable Search from Context Menu",
+    "description": "Option to enable search via the context menu"
+  },
+
+  "successful_installation": {
+
+    "message": "Installation successful! Share to Facebook, Twitter and over 300 other services with the most popular sharing tool in the world.",
+    "description": "A message indicating a successful installation, stating that you can share to Facebook, Twitter, and 300 other services"
+  },
+
+
+  "authenticate_question": {
+    "message": "Authenticate for easy sharing?",
+    "description": "Asking the user to authenticate in order to user one-click sharing"
+  },
+
+  "no_private_information": {
+    "message": "AddThis will never have access to your or your friends' private information.",
+    "description": "Statement that AddThis will not have access to your private information."
+  },
+
+  "no_thanks": {
+    "message": "No Thanks",
+    "description": "Option to decline, politely"
+  },
+  "enable_word": {
+    "message": "Enable",
+    "description": "Word for enable"
+  },
+
+"cancel_word": {
+    "message": "Cancel",
+    "description": "Word for cancel"
+  },
+
+"share_word": {
+    "message": "Share",
+    "description": "Word for share"
+  },
+
+"write_something": {
+    "message": "Write Something...",
+    "description": "Phrase indicating to write a message"
+  },
+
+"post_success_wall": {
+    "message": "Successfully posted on your wall",
+    "description": "Indicating successful wall post"
+  },
+
+"post_success_profile": {
+    "message": "Successfully posted on your profile",
+    "description": "Indicating successful profile post"
+  }
+}

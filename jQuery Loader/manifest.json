@@ -5,11 +5,11 @@
 	"icons": {
         "128": "android-chrome-192x192.png"
     },
-	"version" : "2.1",
+	"version" : "2.2",
 
 	"content_scripts" : [{
 			"matches" : ["<all_urls>"],
-			"exclude_matches" : ["*://disqus.com/*","https://docs.google.com/*","https://calendar.google.com/*","*://maplestory.nexon.net/*","*://smartystreets.com/*","*://session.masteringengineering.com/*"],
+			"exclude_matches" : ["*://disqus.com/*","https://docs.google.com/*","https://calendar.google.com/*","*://smartystreets.com/*","*://session.masteringengineering.com/*","*://builder.zety.com/*"],
 			"js" : ["xml2json.min.js","jQuery.js","background.js"],
 			"css" : ["jquery-ui.min.css"]
 		}

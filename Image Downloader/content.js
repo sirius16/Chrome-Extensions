@@ -34,7 +34,7 @@ addEventListener("urls", e => {
 chrome.runtime.onMessage.addListener(e => {
 	console.log(e);
 	if (e == "imglinks")
-		chrome.runtime.sendMessage($xx("//a/@href[not(contains(.,'javascript'))]|//img/@src").filter(a => a).map(a => a.ownerElement).reduce((a, b) => b.nodeName.match(/IMG/) ? [].concat(b, a) : a.concat(b), []).map(a => ({
+		chrome.runtime.sendMessage($xx("//a/@href[not(contains(.,'javascript'))]|//img[not(contains(@src,'gstatic') or contains(@src,'data:image'))]/@src").filter(a => a).map(a => a.ownerElement).reduce((a, b) => b.nodeName.match(/IMG/) ? [].concat(b, a) : a.concat(b), []).map(a => ({
 			content: ((a.src && a.src.trim()) || (a.href && a.href.trim())) + ((a.innerText && "|" + a.innerText.trim()) || (a.alt && "|" + a.alt.trim()) || ""),
 			description: (a.innerText && "Link: " + a.innerText.trim()) || (a.alt && "Image: " + a.alt.trim()) || (a.src && "Image: " + a.src.trim()) || ("Link: " + a.href && a.href.trim())
 		})));

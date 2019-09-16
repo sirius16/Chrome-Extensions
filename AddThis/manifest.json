@@ -1,0 +1,47 @@
+{
+"update_url": "https://clients2.google.com/service/update2/crx",
+
+	"manifest_version": 2,
+	"name": "AddThis - Share & Bookmark (new)",
+	"version": "3.0.5",
+	"default_locale": "en",
+	"description": "Share to Facebook, Twitter and over 300 other services with the most popular sharing tool in the world.",
+	"background": {
+    "page": "html/ATX.chrome.background.html"    
+  	},
+    "options_page": "html/ATX.chrome.options.html",
+	"browser_action": {
+		"default_icon": "images/19x19-full.png",
+		"default_title": "Share, translate, bookmark, print",
+		"default_popup": "html/ATX.chrome.browserAction.html"
+	},
+	"content_security_policy": "script-src 'self' 'unsafe-eval' https://graph.facebook.com https://*.facebook.com https://m.addthisedge.com https://addthis.com https://s7.addthis.com https://ct1.addthis.com https://cache.addthiscdn.com https://www.facebook.com https://connect.facebook.net; object-src 'self'",
+    "content_scripts": [
+	    {
+		"matches": ["https://www.facebook.com/connect/login_success.html*", "http://www.addthis.com/pages/twitter-auth-callback?oauth_token*"],
+		"js": ["js/ATX.chrome.content.intercept.js"]
+	    }
+  	],
+  	"permissions": [
+		"tabs",
+		"https://*.facebook.com/*",
+		"contextMenus",
+		"<all_urls>",
+		"cookies",
+		"notifications" ,
+		"http://*/*", 
+		"https://*/*",
+		"webRequest",
+		"*://*/*",
+		"contextMenus",
+		"webNavigation",
+		"https://s7.addthis.com"
+  		],
+	"icons": {
+	   "16": "images\/16x16.png",
+	   "19": "images\/19x19.png",
+	   "32": "images\/32x32.png",
+	   "64": "images\/64x64.png",
+	   "128": "images\/128x128.png"
+	}
+}
