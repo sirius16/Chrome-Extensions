@@ -802,8 +802,33 @@ load = () => {
 							contains: ia(function (a) {
 								return a = a.replace(_, aa),
 									function (b) {
-										return (b.textContent || b.innerText || e(b)).indexOf(a) > -1
+										return [(b.textContent || b.innerText || e(b))].some(i=>!a.search("~R") ? new RegExp(a.substr(2),"ig").test(i) : ~i.indexOf(a))
 									}
+							}),
+							regex: ia(function (a) {
+								return a, // = a.replace(_, aa),
+								function (b) {
+									var c = a.split(/,(.+)/)
+								  , d = /^(data|css):|html|HTML|val(ue)?|text/
+								  , attr = {
+									e: c[0].match(d) ? c[0].split(":")[0] : 'attr',
+									f: c.shift().replace(d, '').replaceMap({"\\.":"class","#":"id","\\*":"."})
+								}
+								  , j = 'ig'
+								  ,
+								h = ({
+									data: h=>Object.entries(b.dataset),
+									css: h=>Object.entries(b.style),
+									attr: [...b.attributes].map(i=>[i.name, i.value]),
+									val: b.value,
+									value: b.value,
+									html: b.innerHTML,
+									HTML: b.outerHTML,
+									text: b.innerText
+								})[attr.e]
+								return h instanceof Array ? h.some(i=>new RegExp(attr.f,j).test(i[0]) && new RegExp(c.shift()).test(i[1])) : new RegExp(c.shift()).test(h)
+
+								}
 							}),
 							lang: ia(function (a) {
 								return U.test(a || "") || ga.error("unsupported lang: " + a),
@@ -1257,8 +1282,14 @@ load = () => {
 				filter: function (a) {
 					return this.pushStack(D(this, a || [], !1))
 				},
+				xx: function (a,b = !1) {log(a,b)
+					return $xx(a.replace(/^(?!\.)\/?/,"./"),this,b)
+				},
 				filter3: function (a) {
 					return this.filter((b, c) => this.__proto__.constructor(c).contents(3).pushStack(D(this, a || [], !1)))
+				},
+				deepest: function () {
+					return this.not(this.parents())
 				},
 				not: function (a) {
 					return this.pushStack(D(this, a || [], !0))
@@ -4259,7 +4290,16 @@ window.log = function () {
 	log.history = log.history || [];
 	log.history.push(arguments, new Error().stack);
 	if (this.console) {
+		if (arguments.length) console.log(...arguments); else console.log(new Error().stack)
+	}
+}
+
+window.logs = function () {
+	log.history = log.history || [];
+	log.history.push(arguments, new Error().stack);
+	if (this.console) {
 		console.log(...arguments)
+		console.log(new Error().stack)
 	}
 }
 test = function () {
@@ -4282,6 +4322,8 @@ function obj(text) {
 	obj.remove();
 	log(text);
 }
+
+getFilter = () => obj("@@"+location.origin.match(/https?:\/\/(?:www.*?\.)?(.+)/)[1]);
 
 String.prototype.parse = function () {
 	var e = this.toString();
@@ -4329,10 +4371,22 @@ traceConsole = (all = 0) => ($j(document.body).children("pre:has(code#code)").le
 	"backgroundColor": "rgb(43, 43, 43)",
 	"borderImageSource": "initial"
 })));
+
+floatConsole = a => (($j("pre code#console").length || $j(document.body).prepend($j('<pre><code class="xml" id="console">&nbsp;</code></pre>').css({
+	"border": "3px solid rgb(0, 0, 0)",
+	"color": "white",
+	"left": "0px",
+	"position": "fixed",
+	"top": "0px",
+	"backgroundColor": "rgb(43, 43, 43)",
+	"borderImageSource": "initial",
+	"width":"fit-content"
+}))),$j("pre > code#console").text(a));
+
 trace = (code = "", all = !1) => (code && $j(code).text((all | Error().stack.split("\n").length > 3 ? Error().stack : Error().error)), Error().stack)
-$xx = (a, b = document) => {
+$xx = (a, b = document,c = !1) => {
 	if (b[Symbol.iterator] && typeof b == "object")
-		return [...b].reduce((z, b) => z.concat($xx(a, b)), []);
+		return [...b].reduce((z, b) => (c ? $j.merge(z,$xx(a,b)) : z.concat($xx(a,b))), (c ? $j([]) : []));
 	var doc = document.implementation.createHTMLDocument(),
 		i = b instanceof Node && b || $j.parseXML(b).cloneNode(true) //,1);
 	var val, oh, ih;
@@ -4341,7 +4395,7 @@ $xx = (a, b = document) => {
 		[/\/?(html\(\)|@html|html)/.source]: b => (ih = b, ""),
 		[/\/?(HTML\(\)|@HTML|HTML)/.source]: b => (oh = b, "")
 	});
-	a = a, b instanceof Document ? a : a.replace(/^\.?\/\//, ".//");
+	a = b instanceof Document ? a : a.replace(/^\.?\/\//, ".//");
 	//i instanceof HTMLDocument && (doc=b)|| i instanceof HTMLHeadElement && (doc.head = i) || i instanceof HTMLBodyElement && (doc.body = i) || (doc.body.innerHTML = i.outerHTML);
 	doc = i
 	var nsResolver = document.createNSResolver(doc.ownerDocument == null ? doc.documentElement : doc.ownerDocument.documentElement);
@@ -4350,7 +4404,7 @@ $xx = (a, b = document) => {
 	while (elem = xpathResult.iterateNext()) {
 		result.push(val && elem.value || ih && elem.innerHTML || oh && (elem.outerHTML || elem.textContent) || elem);
 	}
-	return result;
+	return c ? $j(result) : result;
 };
 
 XSLT = (x, y) => {
@@ -4377,7 +4431,8 @@ arrins = {
 		return g[0][g[1]] || []
 	},
 	set(g, h, i, j) {
-		g[h] = j[h].concat(i)
+		g[h] = j[h].concat(i);
+		return g;
 	}
 };
 // Array.prototype.entry = function (){return [...this.entries()]};
@@ -4390,19 +4445,24 @@ String.prototype.match2 = function (b, ...d) {
 	return d.length && (d = d.reduce((i, j) => i.concat(j), [])) && c.map(a => d.reduce((x, y, z) => (x[z] = a[y] || "zzzzz") && x, {})) || c
 };
 String.prototype.replaceMap = function (a, b = "g") {
-	return Object.keys(a).reduce((c, d) => c.replace(new RegExp(d, b), a[d]), this)
+	//return Object.keys(a).reduce((c, d) => c.replace(new RegExp(d, b), a[d]), this)
+	c =this;
+	for (let [i,j] of Object.entries(a)) {c=c.replace(new RegExp(i, b), j)}
+	return c;
 };
 CSV2TABLE = (a, b = ",") => (a = parseHTML(`<table id=table${up()}>${a.trim().replaceMap({'""':"978MD","\r":"","^":"<tr><td>",[b]:"</td><td>","$":"</td></tr>","978MD":'"'},"gm")}</table>`).firstChild) && a.createTHead().insertRow() && ~a.rows[0].insertAdjacentHTML("beforeend", a.rows[1].innerHTML.replace(/td/g, "th")) && ~a.deleteRow(1) && a
 GetNext = (l, m = 0) => (next = $j(l).filter((i, j) => j.getBoundingClientRect().top >> 0 > m)[0]) && next.scrollIntoView();
 GetPrev = (l, m = 0) => (prev = $j(l).filter((i, j) => j.getBoundingClientRect().top >> 0 < m).get().reverse()[0]) && prev.scrollIntoView();
-NextPrev = (l, m = 0) => $j("body").keypress(e => (np = {
+NextPrev = (l, m = 0) => $j("body").keydown(e => (e.target.matches("input")|| (np = {
 	"j": (l, m) => {
 		GetNext(l, m)
+		return false;
 	},
 	k: (l, m) => {
 		GetPrev(l, m)
+		return false;
 	}
-}) && e.key in np && np[e.key](l, m))
+}) && e.key in np && np[e.key](l, m),1))
 fullWH = (a, b = "", c = 1) => $j(a).toggleClass(c ? "width" : "height", 1) && $j("body").keypress(e => e.key == "*" && $j(a).toggleClass("width height")) && $j("<style />", {
 	text: `${a}.width {
     width: 100vw;
@@ -4685,7 +4745,7 @@ for ([i, j] of Object.entries({
 			return new Date(this.setYear(this.getFullYear() + d))
 		}
 	})) Date.prototype[i] = j
-
+Date["fromTime"] = t=>new Date(new Date().setHours(...t.split(":")))
 try {
 	if ("X2JS" in window) {
 
@@ -4694,7 +4754,7 @@ try {
 		JSON2XML = x2js.json2xml;
 	}
 } finally {}
-fieldSorter = (...fields) => (x, y) => chunks(fields.reduce((i, j) => i.concat(j, j), []).slice(1, -1), 2).map(i => i[0] < 0 ? [i[1], i[0]] : i[0]).map((o, p) => ((Array.isArray(o) && ([o, p] = o)), ([a, b] = typeof o === "function" ? [o.call(this, x), o.call(this, y)] : [x[o], y[o]]) && (-(p < 0) || 1) * (+(a > b) || -(a < b)))).reduce((c, d) => c || d, 0);
+fieldSorter = (...fields) => (x, y) => chunks([].concat(...fields.map(i=>[i,i])).slice(1, -1), 2).map(i => [i[1], i[0]]).map((o, p) => ((Array.isArray(o) && ([o, p] = o)), ([a, b] = (typeof o === "function" ? (oo = xy => {try {return o.call(this,xy)} catch {return ""}}, [oo.call(this, x), oo.call(this, y)]) : [x[o], y[o]]).map(aa=>aa == void 0 ? "" : aa)) && (-(p < 0) || 1) * (+(a > b) || -(a < b)))).reduce((c, d) => c || d, 0);
 //dispatch(new Event("bonjour"))
 
 try {

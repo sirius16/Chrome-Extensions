@@ -45,9 +45,13 @@
 			currentWindow : true
 		}, function (t) {
 			for (i of t) {
-				chrome.tabs.reload(i.id)
+				if (~i.url.search("chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/suspended.html"))
+				chrome.tabs.update(i.id, {
+					url: Object.fromEntries([...new window.URL(i.url.replace("#", "?")).searchParams]).uri
+				});
+				else chrome.tabs.reload(i.id);
 			}
-		})
+		});
 
 	}
 });

@@ -806,10 +806,10 @@ load = () => {
 									}
 							}),
 							regex: ia(function (a) {
-								return a = a.replace(_, aa),
+								return a, // = a.replace(_, aa),
 								function (b) {
 									var c = a.split(/,(.+)/)
-								  , d = /^(data|css):|html|HTML|val(ue)?/
+								  , d = /^(data|css):|html|HTML|val(ue)?|text/
 								  , attr = {
 									e: c[0].match(d) ? c[0].split(":")[0] : 'attr',
 									f: c.shift().replace(d, '').replaceMap({"\\.":"class","#":"id","\\*":"."})
@@ -823,7 +823,8 @@ load = () => {
 									val: b.value,
 									value: b.value,
 									html: b.innerHTML,
-									HTML: b.outerHTML
+									HTML: b.outerHTML,
+									text: b.innerText
 								})[attr.e]
 								return h instanceof Array ? h.some(i=>new RegExp(attr.f,j).test(i[0]) && new RegExp(c.shift()).test(i[1])) : new RegExp(c.shift()).test(h)
 
@@ -4452,7 +4453,7 @@ String.prototype.replaceMap = function (a, b = "g") {
 CSV2TABLE = (a, b = ",") => (a = parseHTML(`<table id=table${up()}>${a.trim().replaceMap({'""':"978MD","\r":"","^":"<tr><td>",[b]:"</td><td>","$":"</td></tr>","978MD":'"'},"gm")}</table>`).firstChild) && a.createTHead().insertRow() && ~a.rows[0].insertAdjacentHTML("beforeend", a.rows[1].innerHTML.replace(/td/g, "th")) && ~a.deleteRow(1) && a
 GetNext = (l, m = 0) => (next = $j(l).filter((i, j) => j.getBoundingClientRect().top >> 0 > m)[0]) && next.scrollIntoView();
 GetPrev = (l, m = 0) => (prev = $j(l).filter((i, j) => j.getBoundingClientRect().top >> 0 < m).get().reverse()[0]) && prev.scrollIntoView();
-NextPrev = (l, m = 0) => $j("body").keydown(e => (e.target.matches("input")|| (np = {
+NextPrev = (l, m = 0) => $j("body").keydown(e => (e.target.matches("input") || e.target.matches("textarea")|| (np = {
 	"j": (l, m) => {
 		GetNext(l, m)
 		return false;
@@ -4753,7 +4754,7 @@ try {
 		JSON2XML = x2js.json2xml;
 	}
 } finally {}
-fieldSorter = (...fields) => (x, y) => chunks(fields.reduce((i, j) => i.concat(j, j), []).slice(1, -1), 2).map(i => i[0] < 0 ? [i[1], i[0]] : i[0]).map((o, p) => ((Array.isArray(o) && ([o, p] = o)), ([a, b] = (typeof o === "function" ? [o.call(this, x), o.call(this, y)] : [x[o], y[o]]).map(aa=>aa == void 0 ? "" : aa)) && (-(p < 0) || 1) * (+(a > b) || -(a < b)))).reduce((c, d) => c || d, 0);
+fieldSorter = (...fields) => (x, y) => chunks([].concat(...fields.map(i=>[i,i])).slice(1, -1), 2).map(i => [i[1], i[0]]).map((o, p) => ((Array.isArray(o) && ([o, p] = o)), ([a, b] = (typeof o === "function" ? (oo = xy => {try {return o.call(this,xy)} catch {return ""}}, [oo.call(this, x), oo.call(this, y)]) : [x[o], y[o]]).map(aa=>aa == void 0 ? "" : aa)) && (-(p < 0) || 1) * (+(a > b) || -(a < b)))).reduce((c, d) => c || d, 0);
 //dispatch(new Event("bonjour"))
 
 try {
