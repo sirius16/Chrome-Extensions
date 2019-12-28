@@ -1,0 +1,25 @@
+{
+   "browser_action": {
+      "default_icon": "images/browser_action.png",
+      "default_popup": "popup.html"
+   },
+   "commands": {
+      "_execute_browser_action": {
+         "suggested_key": {
+            "default": "Ctrl+M"
+         }
+      }
+   },
+   "description": "Quickly and conveniently manage your open tabs",
+   "icons": {
+      "128": "images/icon.png",
+      "48": "images/icon48.png"
+   },
+   "manifest_version": 2,
+   "name": "Tab Manager",
+   "content_security_policy": "script-src 'self' 'unsafe-eval' https://ssl.google-analytics.com; object-src 'self'",
+   "permissions": [ "<all_urls>", "tabs", "storage" ],
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "key": "MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC0muQ7SVdjK5Ad1Zn0rXZwAPRA/aOxGwulhIDS1/q8pFzx9kdaznk+v/EBrN67dY2ADtqTzcd3kl241ryl/Ly7c4Gx1z4/oHUqYl1Fyum4AcYLB1H0SnJbX//2H6ebJ2a1k7rTpoSjMAxnFWDLK+cUvPnX5+B9wjwneULjm66hQZ6HMn4AsOqKh8+2+TCO/YWnxzOLppN55Knf1+xWBvAfc2Ge7JPHxPHIz9C1GKDdL8gDBlkMQWnlzWhJYDOW/QBHIyDcqm5e29hlExh9hsksGf5PZN3eS7WKgVkC+vKpDHb0+BrgRO8JpbV+5K24GIk7w3KRaSEAAvmN08ouswe1AgMBAAECggEACdBS2jqJgkIx52pzHl21+QRsQVh8URmISqWxFFlCbtwQOuD9jpx379DL6UyPS9NpmCL2ffU+w1YTkVbbKGUxN48MEJxYGGqr2IeWIZPoRaSUXNwNzX76yNFQyNB+hzVJulB9OewApWzCd8WByCMqFYaRSEn5eQvuwIcGe0oQiq2SXIwSqmiIkR+1sWeIQwx+j9d17siSgliZz5pwtj402ns3oIeU15IXTwxrRwCFwaSwmrgBZd+O4UC7aPIzf0I5YZBbfmoA/uNQAheJRpJNiCjLmZWmj8T+YlP7UUoD2PjelnTmT9lEyc10AhrB1tuwZ5WQ2Pwh1GPPQ/dxgXwDAQKBgQD4SwYBSydGyONkFPGPL69elCQ5UQbib4GZDO7s2oBtF9xUQ8axU1yJ9uT4YEQe0y7UzelnNDw/bUVHVVK21PymRK7zCVYnS8vVSy/hoKubHc73Kye9Epdw4n4AFTRXbVJ6qznziodBFuYLNdVXQJF22IkbAlY1lwNc6+JFfxndgQKBgQC6NgIbUPErie8r8fm1VsSvhGarO2oH+zLzSawx+0w0dMTGtbK1JK2wWwAo8iHc/+VBgq7IOvBxwor7AiV9UuWTZvtkujFrTROpbfSoBDJJeKZRMX7uA3vyLeZCQMr4O0FwfkG/JDegC4g+BSTcHqNK2MnbQFwNss3RuZQ/W0YsNQKBgEVu/XvpH0+tJ+G59Z88D4ecV9DrdshltFEvi7USmW1oicXKukqmbC9sqrVGfmY8WlFKT+X7domqLgB3vMzCHPEGLgJq7vvIN3UrNHWdL8AOAu2d1NwL0evQerndNCjqunDxZyBS8eXi2Gv0HvfqZ4NbpGO4MJGF7HvUvw7+LyaBAoGAWcP5ZgOyDyQSWSPwFZv7ewUfnUIqDijpWeDVEs8q4Eq+JXCn8qz40gA8ZoC7FFeDw/3klf/bs2tuJizVt8GDjHhjjh43/psMdGveOjSzrTltK8zpfIHPeWLpEl07u0iNdlZXCXbDHfMRPZyrNTXL0CQLwxcWiT/9+jE1JwmwHVUCgYBZWSdg/yuCEEXUDGhksupuR0bP92KS6Ia3EL4CqZ9ShwMdaPVm+LuoKQjsdfc0do8DmjKlJIPFN21Zjj5xNZWT9hwEJGL3HkCJtk0Jbp8N6YHonjWDoZ5OMu1AJAJpHiNYrRDrzo+c8BmyPskQFJGPCkX7XzoVUeolSC7jmJkW5Q==",
+   "version": "4.6"
+}
