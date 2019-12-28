@@ -9,7 +9,7 @@
 
 	"content_scripts" : [{
 			"matches" : ["<all_urls>"],
-			"exclude_matches" : ["*://disqus.com/*","https://docs.google.com/*","https://calendar.google.com/*","*://smartystreets.com/*","*://session.masteringengineering.com/*","*://builder.zety.com/*"],
+			"exclude_matches" : ["*://disqus.com/*","https://docs.google.com/*","https://calendar.google.com/*","https://translate.google.com/*","*://smartystreets.com/*","*://session.masteringengineering.com/*","*://builder.zety.com/*"],
 			"js" : ["xml2json.min.js","jQuery.js","background.js"],
 			"css" : ["jquery-ui.min.css"]
 		}

@@ -806,10 +806,10 @@ load = () => {
 									}
 							}),
 							regex: ia(function (a) {
-								return a, // = a.replace(_, aa),
+								return a = a.replace(_, aa),
 								function (b) {
 									var c = a.split(/,(.+)/)
-								  , d = /^(data|css):|html|HTML|val(ue)?|text/
+								  , d = /^(data|css):|html|HTML|val(ue)?/
 								  , attr = {
 									e: c[0].match(d) ? c[0].split(":")[0] : 'attr',
 									f: c.shift().replace(d, '').replaceMap({"\\.":"class","#":"id","\\*":"."})
@@ -823,8 +823,7 @@ load = () => {
 									val: b.value,
 									value: b.value,
 									html: b.innerHTML,
-									HTML: b.outerHTML,
-									text: b.innerText
+									HTML: b.outerHTML
 								})[attr.e]
 								return h instanceof Array ? h.some(i=>new RegExp(attr.f,j).test(i[0]) && new RegExp(c.shift()).test(i[1])) : new RegExp(c.shift()).test(h)
 
@@ -4426,10 +4425,6 @@ if (!("inc" in window)) {
 	incs = new Proxy({}, inc);
 	up = () => ++incs[new Error().stack.split("\n")[2]]
 }
-oe = a => Object.entries(a)
-ofe = a => Object.fromEntries(a)
-o2o = a => Object.fromEntries(Object.entries(a))
-
 arrins = {
 	get(...g) {
 		return g[0][g[1]] || []
@@ -4457,7 +4452,7 @@ String.prototype.replaceMap = function (a, b = "g") {
 CSV2TABLE = (a, b = ",") => (a = parseHTML(`<table id=table${up()}>${a.trim().replaceMap({'""':"978MD","\r":"","^":"<tr><td>",[b]:"</td><td>","$":"</td></tr>","978MD":'"'},"gm")}</table>`).firstChild) && a.createTHead().insertRow() && ~a.rows[0].insertAdjacentHTML("beforeend", a.rows[1].innerHTML.replace(/td/g, "th")) && ~a.deleteRow(1) && a
 GetNext = (l, m = 0) => (next = $j(l).filter((i, j) => j.getBoundingClientRect().top >> 0 > m)[0]) && next.scrollIntoView();
 GetPrev = (l, m = 0) => (prev = $j(l).filter((i, j) => j.getBoundingClientRect().top >> 0 < m).get().reverse()[0]) && prev.scrollIntoView();
-NextPrev = (l, m = 0) => $j("body").keydown(e => (e.target.matches("input") || e.target.matches("textarea")|| (np = {
+NextPrev = (l, m = 0) => $j("body").keydown(e => (e.target.matches("input")|| (np = {
 	"j": (l, m) => {
 		GetNext(l, m)
 		return false;

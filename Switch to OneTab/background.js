@@ -50,8 +50,8 @@ chrome.storage.sync.get(r => {
 	pages = [...(r.pages || "").matchAll(/(.+)\|\|\|(.+)/g)];
 	sites = sitesP.concat(pages.map(i => [switchOnetab, i[2], 0]));
 	zzz = zz.concat(pages.map((i, j) => ({
-		"description": (sitesP.length + 0) + ": " + i[1],
-		"content": (sitesP.length + 0) + ""
+		"description": (sitesP.length + j) + ": " + i[1],
+		"content": (sitesP.length + j) + ""
 	})));
 })
 

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Switch to Special Pages Options</title>
+  
+  <script src="jquery-1.11.3.min.js"></script>
+  <script src="jquery-ui.min.js"></script>
+<!--   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script> -->
+  <link href="summernote-0%208%2012-dist/dist/summernote-lite.css" rel="stylesheet">
+  <script src="summernote-0%208%2012-dist/dist/summernote-lite.js"></script>
+  <style>
+    tr {counter-increment: rows;}
+    tr::before {content: counter(rows) " ";font-weight: bold;float: left;width: 3em;}
+    tr::after {content: "\274c";}
+  </style>
+</head>
+
+<body>
+
+
+  <textarea id="text" cols="30" rows="10"></textarea>
+  <div id="status"></div>
+  <button id="save">Save</button>
+  <script src="options.js"></script>
+
+  <!-- <script src="options.js"></script> -->
+</body>
+
+</html>

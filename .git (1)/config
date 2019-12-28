@@ -5,6 +5,7 @@
 	logallrefupdates = true
 	symlinks = false
 	ignorecase = true
+	sshCommand = ssh -i ~/.ssh/id_rsa2
 [remote "origin"]
 	url = git@personal:sirius16/Chrome-Extensions.git
 	fetch = +refs/heads/*:refs/remotes/origin/*
