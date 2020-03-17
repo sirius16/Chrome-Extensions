@@ -12,7 +12,9 @@ String.prototype.parse = function () {
 	});
 	return e;
 };
-$j.ajaxSetup({async:!1})
+$j.ajaxSetup({
+	async: !1
+})
 sites = [],
 	zzz = [],
 	zz = [],
@@ -105,7 +107,7 @@ function switchOnetab(URL) {
 				chrome.tabs.reload(tabs[0].id);
 			if (~tabs[0].url.search("chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/suspended.html"))
 				chrome.tabs.update(tabs[0].id, {
-					url: Object.fromEntries([...new window.URL(tabs[0].url.replace("#", "?")).searchParams]).uri
+					url: Object.fromEntries([...new URLSearchParams(tabs[0].url)]).uri
 				});
 
 			chrome.tabs.update(tabs[0].id, {
@@ -157,7 +159,7 @@ function openOnetab(URL) {
 		if (tabs.length) {
 			if (~tabs[0].url.search("chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/suspended.html"))
 				chrome.tabs.update(tabs[0].id, {
-					url: Object.fromEntries([...new window.URL(tabs[0].url.replace("#", "?")).searchParams]).uri
+					url: Object.fromEntries([...new URLSearchParams(tabs[0].url)]).uri
 				});
 			chrome.tabs.update(tabs[0].id, {
 				"active": true
@@ -207,7 +209,7 @@ function switchDifferent(URL, regex) {
 				chrome.tabs.reload(tabs[0].id);
 			if (~tabs[0].url.search("chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/suspended.html"))
 				chrome.tabs.update(tabs[0].id, {
-					url: Object.fromEntries([...new window.URL(tabs[0].url.replace("#", "?")).searchParams]).uri
+					url: Object.fromEntries([...new URLSearchParams(tabs[0].url)]).uri
 				});
 			chrome.tabs.update(tabs[0].id, {
 				"active": true

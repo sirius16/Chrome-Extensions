@@ -14,7 +14,7 @@ chrome.storage.sync.get(r => {$(".note-editable")[0].insertAdjacentHTML("afterbe
     (r.pages ? (r.pages.replace(/(.+)\|\|\|(.+)/g, (z, a, b) =>
         "<tr><td>%s</td><td>%s</td></tr>".parse(...[
             a,
-            (~b.search("chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/suspended.html") ? Object.fromEntries([...new window.URL(b.trim().replace("#", "?")).searchParams]).uri : b)
+            (~b.search("chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/suspended.html") ? Object.fromEntries([...new URLSearchParams(b.trim())]).uri : b)
         ].map(i => i.replace(/[\u00A0-\u9999<>\&]/gim, i => '&#' + i.charCodeAt(0) + ';')))) + "<tr><td><br></td><td><br></td></tr>") : "") +
     "</table>");$j("tbody").sortable({cancel:"td"})})
 
@@ -36,7 +36,7 @@ $(".note-editable").keyup(e => {
             tableOp = +!$xx('.//div[starts-with(.,"!!")]|.//span[starts-with(.,"!!")]|.//p[starts-with(.,"!!")]', e.target, 1).remove().length;
             ([tableRow.parents("table"), tableRow][tableOp])[["prepend","before"][tableOp]](j.innerText.replace(/(.+)[\t|](?=[\w-]+:\/\/)(.+)/g, (z, a, b) =>
                 "<tr><td>%s</td><td>%s</td></tr>".parse(...[a,
-                    (~b.search("chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/suspended.html") ? Object.fromEntries([...new window.URL(b.trim().replace("#", "?")).searchParams]).uri : b)
+                    (~b.search("chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/suspended.html") ? Object.fromEntries([...new URLSearchParams(b.trim())]).uri : b)
                 ].map(i => i.replace(/[\u00A0-\u9999<>\&]/gim, i => '&#' + i.charCodeAt(0) + ';')))));
         }).html("<br>");
     }, 1000);

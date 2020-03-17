@@ -817,8 +817,8 @@ load = () => {
 								  , j = 'ig'
 								  ,
 								h = ({
-									data: h=>Object.entries(b.dataset),
-									css: h=>Object.entries(b.style),
+									data: Object.entries(b.dataset),
+									css: Object.entries(b.style),
 									attr: [...b.attributes].map(i=>[i.name, i.value]),
 									val: b.value,
 									value: b.value,
@@ -3519,7 +3519,9 @@ load = () => {
 			ub = /\r?\n/g,
 			vb = /^(?:submit|button|image|reset|file)$/i,
 			wb = /^(?:input|select|textarea|keygen)/i;
-
+		r.search = a => r("*").filter(function () {
+			return this.outerHTML == r(a)[0].outerHTML
+		})
 		function xb(a, b, c, d) {
 			var e;
 			if (r.isArray(b))
@@ -4250,16 +4252,28 @@ load = () => {
 			b || (a.$j = a.$jq = r),
 			r
 	});
-	console.log($j)
+	console.trace($j)
 
-}
-
-
-search = function (a) {
-	return $j("*").filter(function () {
-		return this.outerHTML == a
+	$j("body").on("click", "pre > code#console", function () {
+		var $this = $j(this)
+		clearTimeout($this.data("timer") | 0)
+		$this.data("click", ($this.data("click") | 0) + 1);
+		if ($this.data("click") > 3)
+			$this.remove()
+		else
+			$this.data("timer", setTimeout(() => {
+				$this.data("click",0)
+			}, 500))
 	})
+	
 }
+
+
+// search = function (a) {
+// 	return $j("*").filter(function () {
+// 		return this.outerHTML == a
+// 	})
+// }
 goTo = function (a) {
 	a = $j(a)
 	$j(document.body).off("keyup")
@@ -4288,9 +4302,10 @@ String.prototype.parse = function () {
 }
 window.log = function () {
 	log.history = log.history || [];
-	log.history.push(arguments, new Error().stack);
+	log.history.push([arguments, new Error().stack]);
 	if (this.console) {
-		if (arguments.length) console.log(...arguments); else console.log(new Error().stack)
+		// if (arguments.length) 
+		console.trace(...arguments);// else console.log(new Error().stack)
 	}
 }
 
@@ -4340,9 +4355,7 @@ String.prototype.parse = function () {
 	return e
 }
 
-search = a => $j("*").filter(function () {
-	return this.outerHTML == $j(a)[0].outerHTML
-})
+
 // function parse(str) {
 // var args = [].slice.call(arguments, 1),
 // i = 0;
@@ -4383,29 +4396,55 @@ floatConsole = a => (($j("pre code#console").length || $j(document.body).prepend
 	"width":"fit-content"
 }))),$j("pre > code#console").text(a));
 
+
 trace = (code = "", all = !1) => (code && $j(code).text((all | Error().stack.split("\n").length > 3 ? Error().stack : Error().error)), Error().stack)
-$xx = (a, b = document,c = !1) => {
-	if (b[Symbol.iterator] && typeof b == "object")
-		return [...b].reduce((z, b) => (c ? $j.merge(z,$xx(a,b)) : z.concat($xx(a,b))), (c ? $j([]) : []));
-	var doc = document.implementation.createHTMLDocument(),
-		i = b instanceof Node && b || $j.parseXML(b).cloneNode(true) //,1);
-	var val, oh, ih;
-	a = a.replaceMap({
-		[/\/?(value\(\)|@value|value)/.source]: b => (val = b, ""),
-		[/\/?(html\(\)|@html|html)/.source]: b => (ih = b, ""),
-		[/\/?(HTML\(\)|@HTML|HTML)/.source]: b => (oh = b, "")
-	});
-	a = b instanceof Document ? a : a.replace(/^\.?\/\//, ".//");
-	//i instanceof HTMLDocument && (doc=b)|| i instanceof HTMLHeadElement && (doc.head = i) || i instanceof HTMLBodyElement && (doc.body = i) || (doc.body.innerHTML = i.outerHTML);
-	doc = i
-	var nsResolver = document.createNSResolver(doc.ownerDocument == null ? doc.documentElement : doc.ownerDocument.documentElement);
-	var xpathResult = (doc.ownerDocument || doc).evaluate(a, doc, nsResolver, 5, null);
-	var result = [];
-	while (elem = xpathResult.iterateNext()) {
-		result.push(val && elem.value || ih && elem.innerHTML || oh && (elem.outerHTML || elem.textContent) || elem);
-	}
-	return c ? $j(result) : result;
-};
+
+nodeToXPath = node => node instanceof HTMLDocument ? "" : "//"+[...(function*(){ var element;for (element = node;element && !element.id;element = element.parentElement) yield `${element.outerHTML ? element.outerHTML.match(/<([^\s>]+)/)[1] : "text()"}[${[...element.parentElement.childNodes].filter(i=>i.nodeName == element.nodeName).indexOf(element)+1}]`;yield `${element.outerHTML.match(/<([^\s>]+)/)[1]}[@id="${element.id}"]`})()].reverse().join("/")
+
+$xx = (selectors, nodes = document, jq = !1, ...args) => {
+
+    [jq, nodes, selectors] = sa1(flatten(selectors, nodes, jq, ...args), b => ~["number", "integer"].indexOf(typeof b), a => a instanceof Node, a => typeof a === "string")
+    // if (b[Symbol.iterator] && typeof b == "object")
+    // 	return [...b].reduce((z, b) => (c ? $j.merge(z,$xx(a,b)) : z.concat($xx(a,b))), (c ? $j([]) : []));
+    // 	i = b instanceof Node && b || $j.parseXML(b).cloneNode(true) //,1);
+    selectors = sai1(flatten(selectors).join("|").split("|"), /\/?(value\(\)|@value|value)/, /\/?(html\(\)|@html|html)/, /\/?(HTML\(\)|@HTML|HTML)/,/\/?(txt\(\)|@txt|txt)/)
+
+    var result = flatten([nodes || document]).reduce((node, b) => {
+        for (a of selectors) {
+            // var doc = document.implementation.createHTMLDocument()
+            var a = flatten(a)
+            //a[0] = (b instanceof Document ? a[0] : a[0].replace(/^\.?\/\//, ".//")).replace(/\/?(value\(\)|@value|value)|\/?(html\(\)|@html|html)|\/?(HTML\(\)|@HTML|HTML)/, "");
+			a[0] = a[0].replaceMap(/^(?=\w)/, ".//",/^\/+/,".$&",
+			"\\.{3}",nodeToXPath(b)
+			, /\/?(value\(\)|@value|value)|\/?(html\(\)|@html|html)|\/?(HTML\(\)|@HTML|HTML)|\/?(txt\(\)|@txt|txt)/, "", "g")
+            // i instanceof HTMLDocument && (doc = b) || i instanceof HTMLHeadElement && (doc.head = i) || i instanceof HTMLBodyElement && (doc.body = i) || (doc.body.innerHTML = i.outerHTML);
+            // doc = i
+            var doc = b.ownerDocument || b
+            var nsResolver = doc.createNSResolver(doc.documentElement);
+            var xpathResult = doc.evaluate(a[0], b, null, 5, null);
+
+
+
+
+            while (elem = xpathResult.iterateNext())
+                switch (a[1]) {
+                    case 0:
+                    case 1:
+					case 3:
+                        node.push(elem[["value", "innerHTML",,"innerText"][a[1]]] || elem)
+                        break;
+                    case 2:
+                        node.push(elem.outerHTML || elem.textContent || elem)
+						break;
+                    default:
+                        node.push(elem)
+                        break;
+                };
+        }
+        return node
+    }, (a=>(a.xx=function(a,jq=0,...args){return $xx(a,this,jq,...args)}, a))([]))
+    return (jq||[]).pop() ? $j(result) : result;
+}
 
 XSLT = (x, y) => {
 	z = new XSLTProcessor(), x = parseXML(x), y = parseXML(y.replace(/^(\<\?xml\ version\=\"1\.0\"\?\>\s*\<xsl\:stylesheet\ xmlns\:xsl\=\"http\:\/\/www\.w3\.org\/1999\/XSL\/Transform\"\ version\=\"1\.0\"\>\s*\<xsl\:output\ method\=\"xml\"\/\>)?/, `<?xml version="1.0"?>
@@ -4426,9 +4465,39 @@ if (!("inc" in window)) {
 	incs = new Proxy({}, inc);
 	up = () => ++incs[new Error().stack.split("\n")[2]]
 }
-oe = a => Object.entries(a)
-ofe = a => Object.fromEntries(a)
-o2o = a => Object.fromEntries(Object.entries(a))
+if (document.title != "Gmail") oe = Object.entries;
+ofe = Object.fromEntries
+o2o = a => ofe(oe(a))
+
+function extractURL(u) {
+    try {
+        return new window.URL(u.replace(/chrome-extension:\/\/klbibkeccnjlkjkiokjodocebajanakg\/suspended.html#ttl=.+&uri=/, ""))
+    }
+    catch {
+        return u
+    }
+}
+
+
+getSearchParams = u => ofe([...extractURL(u).searchParams.entries()])
+
+function sortByName(a, sort = 0, ...b) {
+    if (!~[-1, 1].indexOf(sort)) {
+        b = [].concat(sort, b)
+        sort = 0
+    }
+    var c = oe(flatten(b).reduce((i, j) => (i[parseCallback(a, j)] = j, i), new Proxy({}, arrins)))
+    return sort ? c.sort(fieldSorter(sort, a => a[1].length)) : c
+}
+
+function countByName(a, sort = 0, ...b) {
+    if (!~[-1, 1].indexOf(sort)) {
+        b = [].concat(sort, b)
+        sort = 0
+    }
+    var c = oe(b.reduce((i, j) => (i[parseCallback(a, j)]++, i), new Proxy({}, inc)))
+    return sort ? c.sort(fieldSorter(sort, a => a[1].length)) : c
+}
 
 arrins = {
 	get(...g) {
@@ -4450,8 +4519,9 @@ String.prototype.match2 = function (b, ...d) {
 };
 String.prototype.replaceMap = function (a, b = "g") {
 	//return Object.keys(a).reduce((c, d) => c.replace(new RegExp(d, b), a[d]), this)
+	[b,a]=sa1(arguments,/^[gmi]+$/,true)
 	c =this;
-	for (let [i,j] of Object.entries(a)) {c=c.replace(new RegExp(i, b), j)}
+	for (let [i,j] of flatten(arguments).length == 2 ? oe(a) : chunks(a,2)){c=c.replace(new RegExp(i, b), j)}
 	return c;
 };
 CSV2TABLE = (a, b = ",") => (a = parseHTML(`<table id=table${up()}>${a.trim().replaceMap({'""':"978MD","\r":"","^":"<tr><td>",[b]:"</td><td>","$":"</td></tr>","978MD":'"'},"gm")}</table>`).firstChild) && a.createTHead().insertRow() && ~a.rows[0].insertAdjacentHTML("beforeend", a.rows[1].innerHTML.replace(/td/g, "th")) && ~a.deleteRow(1) && a
@@ -4510,6 +4580,18 @@ arr2tree = l => (l.unshift(null, new Node(l.shift())), l.reduce((i, j, k) => k >
 openChunks = (l, n, r = 0) => openc = new Proxy(r ? chunks(l, n).reverse() : chunks(l, n), {
 	get: i => i.length ? i.shift().forEach(i => open(i)) : alert("No more links")
 });
+
+flatten = (...a) => [...(function* FLATTEN(array) {
+    for (const item of array) {
+        if (item != void 0 && item[Symbol.iterator] && typeof item == "object") {
+            yield* FLATTEN(item);
+        } else {
+            yield item;
+        }
+    }
+})([a])];
+
+
 range = (...a) => [...(function* RANGE(begin, end, interval = 1) {
 	if (typeof end == "undefined") {
 		end = begin;
@@ -4522,11 +4604,116 @@ range = (...a) => [...(function* RANGE(begin, end, interval = 1) {
 chunks = (l, n = 0) => n ? [...(function* CHUNKS(l, n) {
 	for (i of range(0, l.length, n)) yield l.slice(i, i + n);
 })(l, n)] : l
-urlq = a => $j.extend(false, {}, ...[...(function* URLQ(a) {
-	for ([i, j] of [...new URL(a).searchParams.entries()]) yield {
-		[i]: j
-	};
-})(a)]);
+// urlq = a => ofe(new URL(a).searchParams.entries())
+urlq = a => ofe(URLSearchParams(location.sear))
+
+
+mvs = multiValueSet = (obj, key, ...values) => (obj[key] = mva(obj[key], ...values), obj)
+
+mva = multiValueAdd = (obj, ...values) => (obj = obj == void 0 ? (values.length == 1 && !Array.isArray(values) ? values[0] : values) : [].concat(obj, values))
+
+switchArrayOne = sa1 = (arr, ...functions) => ArrSwitch(0,arr,...functions) 
+switchArrayAll = saa = (arr, ...functions) => ArrSwitch(1,arr,...functions)
+switchArrayIndexOne = sai1 = (arr,...functions) => ArrSwitch(2,arr,...functions)
+switchArrayIndexAll = saia = (arr,...functions) => ArrSwitch(3,arr,...functions)
+
+ArrSwitch = (index,arr,...functions)=> [].concat(typeof arr == "object" && arr[Symbol.iterator] && !Array.isArray(arr) ? [...arr] : arr).reduce((i, j,n) => {
+    // console.log(arr, ...functions,functions.entries(), i, j)
+    for ([k, l] of functions.entries()) {
+        // console.log(i, j, k, l);
+        for (m of flatten([].concat(l))) {
+            // console.log(i, j, k, l, m);
+            if ((typeof m === "boolean" && m) || (m instanceof RegExp && m.exec(j)) || (typeof m !== "function" && j == m) || (typeof m === "function" && m(j)))
+			switch (index) {
+				case 1:
+					i = mvs(i, k, j)
+					break;
+				case 0:
+					return mvs(i, k, j)
+					break;
+				case 2:
+					return mvs(i,n,k)
+					break;
+				case 3:
+					i = mvs(i,n,k)
+			}
+        }
+    }
+    return i
+}, index & 2 ? flatten(arr) : [])
+// }, []).map((o,p)=>(index & 2) && (o != void 0) && [p].concat([[flatten(arr)[p]].concat(o)]) || o)
+
+
+/**
+ * @param  {Object[]} ...elementObjects List of objects to create
+ * @return {jQuery Object} The Elements
+ */
+createNodes = (...elementObjects) => flatten(elementObjects).reduce((elements, i) => {
+	if (typeof i == "string") // Only parse plain objects
+		return $j.merge(elements, $j.parseHTML(i));
+
+
+		
+		// Remove element name from object
+		// for (j of ["ele", "element"])
+		// 	if (j in i)
+		// 		delete i[j]
+		
+		
+		var contents = oe(i).map(i => [i[0].toLowerCase().replaceMap("text", "Text", "html", "HTML"), i[1]]) // change names to lowercase unless html or text
+		
+		// var element = document.body
+		var element = document.createElement(i.ele || i.element) // Create element
+		
+		
+	/**
+	 * 0 = child elements
+	 * 1 = Text or HTML
+	 * 2 = Event
+	 * 3 = Styles
+	 * 4 = Attribute
+	 */
+	var [,children,inner,events,styles,data,value,attributes] = sa1(contents, e=> ~["ele", "ele"].indexOf(e[0]),e => ~["child", "children"].indexOf(e[0]), e => "inner" + e[0] in element, e => "on" + e[0] in element, e => e[0] == "style" && typeof e[1] != "string", e => e[0] == "data",e => e[0] == "value", true)
+	
+	
+
+	// Add attributes
+	if (attributes)
+		for (i of attributes)
+		element.setAttribute(...i)
+		
+	// set innerHTML or innerText
+	if (inner)
+		for ([i, j] of inner && inner.sort(fieldSorter(1, 0)))
+			element["inner" + i.replace("TEXT", "Text")] = j
+
+	// set style elements
+	if (styles)
+		for ([i, j] of oe(styles[0][1]))
+			element.style[i] = j
+
+	// value can't be added as attribute		
+	if (value) {
+		element.value = value[0][1]
+	}
+	
+
+	// create event listeners
+	element = (events || []).reduce((i, j) => i.on(...j), $j(element).data(data && data[0][1] || {}))
+
+	// Add children (recursive)
+	element = element.append(createNodes(children && children[0][1] || []))
+
+
+	return $j.merge(elements, element)
+}, $j())
+/**
+ * Take an element and reduce it to its base parts
+ * @param  {Node} ...nodes Nodes 
+ * @return {Object[]} deconstructed nodes
+ */
+deconstructNodes = (...nodes) => flatten(nodes).map(i=>ofe([...i.attributes].map(i=>[i.name,i.value]).concat([["ele",i.tagName.toLowerCase()],["text",i.innerText]]).filter(i=>i[1])))
+
 
 /*
  * Date Format 1.2.3
@@ -4713,7 +4900,7 @@ findObj = (a, b, c = "\0", z = a, y = []) => {
 	document.body.addEventListener("click", check);
 
 	function check(e) {
-		if (!((elem = e.path.filter(f => ~checked.indexOf(f))) && (e.shiftKey || Object.entries(evtTrue).every(f => e[f[0]] == f[1]))))
+		if (!((elem = e.path.filter(f => ~checked.indexOf(f))) && (e.shiftKey || oe(evtTrue).every(f => e[f[0]] == f[1]))))
 			return;
 		else
 			elem = elem[0]
@@ -4758,9 +4945,126 @@ try {
 		JSON2XML = x2js.json2xml;
 	}
 } finally {}
-fieldSorter = (...fields) => (x, y) => chunks([].concat(...fields.map(i=>[i,i])).slice(1, -1), 2).map(i => [i[1], i[0]]).map((o, p) => ((Array.isArray(o) && ([o, p] = o)), ([a, b] = (typeof o === "function" ? (oo = xy => {try {return o.call(this,xy)} catch {return ""}}, [oo.call(this, x), oo.call(this, y)]) : [x[o], y[o]]).map(aa=>aa == void 0 ? "" : aa)) && (-(p < 0) || 1) * (+(a > b) || -(a < b)))).reduce((c, d) => c || d, 0);
+
+tryCallback = (o,oo) => {
+    try {
+        return o.call(this, oo)
+    } catch {
+        return ""
+    }
+}
+
+parseCallback = (f, ...o) => (o = (f && f != 0 && f != void 0) ? o.map(o => typeof f === "boolean" ? f : typeof f === "function" ? tryCallback(f, o) : o[f]).map(aa => aa == void 0 ? "" : aa) : flatten(o), o.length == 1 ? o[0] : o)
+
+/**
+ * Trigger an action after a certain number of events in rapid succession
+ * @param  {String} key AutoHotKey style key to listen for
+ * @param  {String} target  target to look for
+ * @param  {Function} callback function to execute
+ * @param  {Node} nodes nodes to target
+ * @param  {Number} presses=3 number of presses before executing function
+ */
+mpe = multiPressEvent = (key,target,callback,presses=3,nodes=document.body,...args)=>{
+    log(key, target, callback, presses, ...args)
+    // Parse arguments
+    var [clicks,buttons,nodes,presses,callbacks,targets] = sa1(flatten(key, target, callback, presses, ...args), /[LMR]Button:*$/i, /::$/, a=>a instanceof Node || a instanceof $j, a=>typeof a == "number", a=>typeof a == "function", a=>typeof a == "string")
+
+    // Get number of presses
+    presses = (presses || [3]).pop()
+
+    // turn targs to css string
+    targets = (targets || [""]).join(",")
+
+    // Get targeted nodes
+    nodes = $j(flatten(nodes || document.body))
+
+    return [...(function *LOOP_CALLBACKS(clicks, buttons, presses, callbacks, targets) // Loop through callbacks
+    {
+        for (var callback of callbacks || []) {
+
+            // Set Click Events
+            for (var click of clicks || []) {
+                nodes.on("click", targets, function(e) {
+                    multiPressHandler(e, this, click, presses, callback)
+                })
+                yield[nodes, "click", targets, callback]
+            }
+
+            // Set Key Events
+            for (var button of buttons || []) {
+                nodes.on("keydown", targets, function(e) {
+                    multiPressHandler(e, this, button, presses, callback)
+                })
+                yield[nodes, "keydown", targets, callback]
+            }
+        }
+    }
+    )(clicks, buttons, presses, callbacks, targets)]
+}
+/**
+ * Process the events
+ * @param  {UIEvent} event The registered event
+ * @param  {HTMLElement} element The element that receieved the event
+ * @param  {String} key AutoHotKey style hotkey 
+ * @param  {Function} callback
+ */
+multiPressHandler = (event,element,key,presses,callback)=>{
+    //log(event, element, key, presses, callback)
+
+    //     if (event.key == "Escape")
+    //     debugger;
+
+    var keyModifiers = {
+        "^": "ctrlKey",
+        "!": "altKey",
+        "+": "shiftKey"
+    }, click;
+    [combination,modifiers,key] = key.match(/([!^+]*)(.+)(?=::)/);
+
+    key = key.replace("ESC", "Escape")
+
+    // Check if the correct modifiers (if any at all) were pressed
+    for (var [symbol,modifier] of oe(keyModifiers)) {
+        if (!~[...(modifiers || "")].indexOf(symbol) == event[modifier])
+            return 1
+    }
+
+    // If it's a mouse click, end handler if not the correct button
+    if (click = modifiers.match(/([LMR])Button/i) && [..."LMR"].indexOf(click[1].toUpperCase()) != event.button)
+        return
+
+    // Ignore if click already verified
+    // If not the correct key, end handler
+    if (!click && (key != event.key))
+        return 1
+
+    var $this = $j(element)
+    clearTimeout($this.data(combination+"timeOut") | 0)
+    $this.data(combination, $this.data(combination) + 1 || 1);
+    if ($this.data(combination) > presses)
+		$this.data(combination, 0),callback($this)
+    else
+        $this.data(combination+"timeOut", setTimeout(()=>{
+            $this.data(combination, 0)
+        }
+        , 500))
+
+    return 1;
+}
+
+fieldSorter = (...fields) => (x, y) => chunks([].concat(...fields.map(i=>[i,i])).slice(1, -1), 2).map(i => [i[1], i[0]]).map((o, p) => ((Array.isArray(o) && ([o, p] = o)), ([a,b] = parseCallback(o,x,y)), (-(p < 0) || 1) * (+(a > b) || -(a < b)))).reduce((c, d) => c || d, 0);
 //dispatch(new Event("bonjour"))
 
 try {
-	load();
+	if (document.title == "Gmail")
+		gmailObserver = new MutationObserver(m => {
+			if (document.querySelector("div#loading") && document.querySelector("div#loading").style.display) {
+				oe = Object.entries
+				gmailObserver.disconnect()
+			}
+		}), gmailObserver.observe(document.body, {
+			subtree: !0,
+			childList: !0
+		})
+	load()
 } finally {}

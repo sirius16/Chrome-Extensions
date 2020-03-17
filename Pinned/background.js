@@ -47,7 +47,7 @@
 			for (i of t) {
 				if (~i.url.search("chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/suspended.html"))
 				chrome.tabs.update(i.id, {
-					url: Object.fromEntries([...new window.URL(i.url.replace("#", "?")).searchParams]).uri
+					url: Object.fromEntries([...new URLSearchParams(i.url)]).uri
 				});
 				else chrome.tabs.reload(i.id);
 			}
