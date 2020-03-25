@@ -4527,7 +4527,7 @@ String.prototype.replaceMap = function (a, b = "g") {
 CSV2TABLE = (a, b = ",") => (a = parseHTML(`<table id=table${up()}>${a.trim().replaceMap({'""':"978MD","\r":"","^":"<tr><td>",[b]:"</td><td>","$":"</td></tr>","978MD":'"'},"gm")}</table>`).firstChild) && a.createTHead().insertRow() && ~a.rows[0].insertAdjacentHTML("beforeend", a.rows[1].innerHTML.replace(/td/g, "th")) && ~a.deleteRow(1) && a
 GetNext = (l, m = 0) => (next = $j(l).filter((i, j) => j.getBoundingClientRect().top >> 0 > m)[0]) && next.scrollIntoView();
 GetPrev = (l, m = 0) => (prev = $j(l).filter((i, j) => j.getBoundingClientRect().top >> 0 < m).get().reverse()[0]) && prev.scrollIntoView();
-NextPrev = (l, m = 0) => $j("body").keydown(e => (e.target.matches("input") || e.target.matches("textarea")|| (np = {
+NextPrev = (l, m = 0) => $j("body").keydown(e => ((e.target.matches("input,textarea,.note-editable,.note-editable *") || e.currentTarget.matches("input,textarea,.note-editable,.note-editable *"))|| (np = {
 	"j": (l, m) => {
 		GetNext(l, m)
 		return false;
