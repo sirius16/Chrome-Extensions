@@ -4399,7 +4399,7 @@ floatConsole = a => (($j("pre code#console").length || $j(document.body).prepend
 
 trace = (code = "", all = !1) => (code && $j(code).text((all | Error().stack.split("\n").length > 3 ? Error().stack : Error().error)), Error().stack)
 
-nodeToXPath = node => node instanceof HTMLDocument ? "" : "//"+[...(function*(){ var element;for (element = node;element && !element.id;element = element.parentElement) yield `${element.outerHTML ? element.outerHTML.match(/<([^\s>]+)/)[1] : "text()"}[${[...element.parentElement.childNodes].filter(i=>i.nodeName == element.nodeName).indexOf(element)+1}]`;yield `${element.outerHTML.match(/<([^\s>]+)/)[1]}[@id="${element.id}"]`})()].reverse().join("/")
+nodeToXPath = node => node instanceof HTMLDocument ? "" : "//"+[...(function*(){ var element;for (element = node;element && !element.id && element.parentElement;element = element.parentElement) yield `${element.outerHTML ? element.outerHTML.match(/<([^\s>]+)/)[1] : "text()"}[${[...element.parentElement.childNodes].filter(i=>i.nodeName == element.nodeName).indexOf(element)+1}]`;yield `${element.outerHTML.match(/<([^\s>]+)/)[1]}[@id="${element.id}"]`})()].reverse().join("/")
 
 $xx = (selectors, nodes = document, jq = !1, ...args) => {
 
@@ -4984,16 +4984,20 @@ mpe = multiPressEvent = (key,target,callback,presses=3,nodes=document.body,...ar
 
             // Set Click Events
             for (var click of clicks || []) {
-                nodes.on("click", targets, function(e) {
-                    multiPressHandler(e, this, click, presses, callback)
+                nodes.on("click", targets, function (e) {
+                	if (e.target.matches("input,textarea,.note-editable *") || e.currentTarget.matches("input,textarea,.note-editable *"))
+                		return 1;
+                	return multiPressHandler(e, this, click, presses, callback)
                 })
                 yield[nodes, "click", targets, callback]
             }
 
             // Set Key Events
             for (var button of buttons || []) {
-                nodes.on("keydown", targets, function(e) {
-                    multiPressHandler(e, this, button, presses, callback)
+                nodes.on("keydown", targets, function (e) {
+                	if (e.target.matches("input,textarea,.note-editable *") || e.currentTarget.matches("input,textarea,.note-editable *"))
+                		return 1;
+                	return multiPressHandler(e, this, button, presses, callback)
                 })
                 yield[nodes, "keydown", targets, callback]
             }
@@ -5031,7 +5035,7 @@ multiPressHandler = (event,element,key,presses,callback)=>{
 
     // If it's a mouse click, end handler if not the correct button
     if (click = modifiers.match(/([LMR])Button/i) && [..."LMR"].indexOf(click[1].toUpperCase()) != event.button)
-        return
+        return 1
 
     // Ignore if click already verified
     // If not the correct key, end handler
@@ -5041,7 +5045,7 @@ multiPressHandler = (event,element,key,presses,callback)=>{
     var $this = $j(element)
     clearTimeout($this.data(combination+"timeOut") | 0)
     $this.data(combination, $this.data(combination) + 1 || 1);
-    if ($this.data(combination) > presses)
+    if ($this.data(combination) >= presses)
 		$this.data(combination, 0),callback($this)
     else
         $this.data(combination+"timeOut", setTimeout(()=>{
