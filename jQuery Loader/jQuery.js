@@ -4962,12 +4962,13 @@ parseCallback = (f, ...o) => (o = (f && f != 0 && f != void 0) ? o.map(o => type
  * @param  {String} target  target to look for
  * @param  {Function} callback function to execute
  * @param  {Node} nodes nodes to target
+ * @param  {Boolean} input=false if event should trigger while in textareas and inputs 
  * @param  {Number} presses=3 number of presses before executing function
  */
-mpe = multiPressEvent = (key,target,callback,presses=3,nodes=document.body,...args)=>{
+mpe = multiPressEvent = (key,target,callback,presses=3,nodes=document.body,input=!1,...args)=>{
     log(key, target, callback, presses, ...args)
     // Parse arguments
-    var [clicks,buttons,nodes,presses,callbacks,targets] = sa1(flatten(key, target, callback, presses, ...args), /[LMR]Button:*$/i, /::$/, a=>a instanceof Node || a instanceof $j, a=>typeof a == "number", a=>typeof a == "function", a=>typeof a == "string")
+    var [clicks,buttons,nodes,inputs,presses,callbacks,targets] = sa1(flatten(key, target, callback, presses, ...args), /[LMR]Button:*$/i, /::$/, a=>a instanceof Node || a instanceof $j,a=>typeof a =="boolean", a=>typeof a == "number", a=>typeof a == "function", a=>typeof a == "string")
 
     // Get number of presses
     presses = (presses || [3]).pop()
@@ -4976,7 +4977,9 @@ mpe = multiPressEvent = (key,target,callback,presses=3,nodes=document.body,...ar
     targets = (targets || [""]).join(",")
 
     // Get targeted nodes
-    nodes = $j(flatten(nodes || document.body))
+	nodes = $j(flatten(nodes || document.body))
+	
+	input = (inputs || [!1]).pop()
 
     return [...(function *LOOP_CALLBACKS(clicks, buttons, presses, callbacks, targets) // Loop through callbacks
     {
@@ -4985,7 +4988,7 @@ mpe = multiPressEvent = (key,target,callback,presses=3,nodes=document.body,...ar
             // Set Click Events
             for (var click of clicks || []) {
                 nodes.on("click", targets, function (e) {
-                	if (e.target.matches("input,textarea,.note-editable *") || e.currentTarget.matches("input,textarea,.note-editable *"))
+                	if ((e.target.matches("input,textarea,.note-editable,.note-editable *") || e.currentTarget.matches("input,textarea,.note-editable,.note-editable *")) && !input)
                 		return 1;
                 	return multiPressHandler(e, this, click, presses, callback)
                 })
@@ -4995,7 +4998,7 @@ mpe = multiPressEvent = (key,target,callback,presses=3,nodes=document.body,...ar
             // Set Key Events
             for (var button of buttons || []) {
                 nodes.on("keydown", targets, function (e) {
-                	if (e.target.matches("input,textarea,.note-editable *") || e.currentTarget.matches("input,textarea,.note-editable *"))
+                	if ((e.target.matches("input,textarea,.note-editable,.note-editable *") || e.currentTarget.matches("input,textarea,.note-editable,.note-editable *")) && !input)
                 		return 1;
                 	return multiPressHandler(e, this, button, presses, callback)
                 })
