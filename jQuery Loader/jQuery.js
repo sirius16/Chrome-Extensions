@@ -4266,6 +4266,9 @@ load = () => {
 			}, 500))
 	})
 	
+	$j("body").on("click mousedown","#checker",e=>(e.preventDefault(),!1))
+
+
 }
 
 
@@ -4296,14 +4299,14 @@ String.prototype.parse = function () {
 		e = e.replace(new RegExp("\\{" + i + "\\}", "gi"), n[i]);
 	i = 0;
 	e = e.replace(/%s/g, function (x) {
-		return n[i] ? n[i++] : x;
+		return i < n.length ? n[i++] : x;
 	})
 	return e
 }
 window.log = function () {
 	log.history = log.history || [];
 	log.history.push([arguments, new Error().stack]);
-	if (this.console) {
+	if (console) {
 		// if (arguments.length) 
 		console.trace(...arguments);// else console.log(new Error().stack)
 	}
@@ -4399,7 +4402,7 @@ floatConsole = a => (($j("pre code#console").length || $j(document.body).prepend
 
 trace = (code = "", all = !1) => (code && $j(code).text((all | Error().stack.split("\n").length > 3 ? Error().stack : Error().error)), Error().stack)
 
-nodeToXPath = node => node instanceof HTMLDocument ? "" : "//"+[...(function*(){ var element;for (element = node;element && !element.id && element.parentElement;element = element.parentElement) yield `${element.outerHTML ? element.outerHTML.match(/<([^\s>]+)/)[1] : "text()"}[${[...element.parentElement.childNodes].filter(i=>i.nodeName == element.nodeName).indexOf(element)+1}]`;yield `${element.outerHTML.match(/<([^\s>]+)/)[1]}[@id="${element.id}"]`})()].reverse().join("/")
+nodeToXPath = node => node instanceof HTMLDocument ? "" : "//"+[...(function*(){ var element;for (element = node;element && !element.id && element.parentElement;element = element.parentElement) yield `${element.outerHTML ? element.outerHTML.match(/<([^\s>]+)/)[1] : "text()"}[${[...element.parentElement.childNodes].filter(i=>i.nodeName == element.nodeName).indexOf(element)+1}]`;yield `${element.outerHTML.match(/<([^\s>]+)/)[1]}[@id="${element.id}"]`.replace(/\[@id=""\]/,"")})()].reverse().join("/")
 
 $xx = (selectors, nodes = document, jq = !1, ...args) => {
 
@@ -4442,7 +4445,7 @@ $xx = (selectors, nodes = document, jq = !1, ...args) => {
                 };
         }
         return node
-    }, (a=>(a.xx=function(a,jq=0,...args){return $xx(a,this,jq,...args)}, a))([]))
+    }, Object.assign([],{xx:function(a,jq=0,...args){return $xx(a,this,jq,...args)}}))
     return (jq||[]).pop() ? $j(result) : result;
 }
 
@@ -4492,11 +4495,13 @@ function sortByName(a, sort = 0, ...b) {
 
 function countByName(a, sort = 0, ...b) {
     if (!~[-1, 1].indexOf(sort)) {
-        b = [].concat(sort, b)
+        b = [].concat(sort, ...b)
         sort = 0
     }
+    else
+        b = [].concat(...b)
     var c = oe(b.reduce((i, j) => (i[parseCallback(a, j)]++, i), new Proxy({}, inc)))
-    return sort ? c.sort(fieldSorter(sort, a => a[1].length)) : c
+    return sort ? c.sort(fieldSorter(sort, 1)) : c
 }
 
 arrins = {
@@ -4581,15 +4586,16 @@ openChunks = (l, n, r = 0) => openc = new Proxy(r ? chunks(l, n).reverse() : chu
 	get: i => i.length ? i.shift().forEach(i => open(i)) : alert("No more links")
 });
 
-flatten = (...a) => [...(function* FLATTEN(array) {
-    for (const item of array) {
-        if (item != void 0 && item[Symbol.iterator] && typeof item == "object") {
-            yield* FLATTEN(item);
-        } else {
-            yield item;
-        }
-    }
-})([a])];
+flatten = (...a) => [...(function*(){for (var i=0,arr=[a],prevarr = [];i<arr.length || prevarr.length;i++) if (i==arr.length) [i,arr] = prevarr.pop(); else if (arr[i] != void 0 && arr[i][Symbol.iterator] && typeof arr[i] == "object") {prevarr.push([i,arr]);arr=arr[i],i=-1} else yield arr[i]})()]
+// [...(function* FLATTEN(array) {
+//     for (const item of array) {
+//         if (item != void 0 && item[Symbol.iterator] && typeof item == "object") {
+//             yield* FLATTEN(item);
+//         } else {
+//             yield item;
+//         }
+//     }
+// })([a])];
 
 
 range = (...a) => [...(function* RANGE(begin, end, interval = 1) {
@@ -4612,11 +4618,60 @@ mvs = multiValueSet = (obj, key, ...values) => (obj[key] = mva(obj[key], ...valu
 
 mva = multiValueAdd = (obj, ...values) => (obj = obj == void 0 ? (values.length == 1 && !Array.isArray(values) ? values[0] : values) : [].concat(obj, values))
 
-switchArrayOne = sa1 = (arr, ...functions) => ArrSwitch(0,arr,...functions) 
-switchArrayAll = saa = (arr, ...functions) => ArrSwitch(1,arr,...functions)
+
+/**
+ * Perform a switch function and return an array
+ * @param  {Array} arr array of things to switch
+ * @param  {Function} functions switch functions
+ * @return {Array} switched array
+ * 
+ */
+
+switchArrayOne = sa1 = (arr,...functions) => ArrSwitch(0,arr,...functions) 
+
+
+/**
+ * Perform a switch function and return an array
+ * @param  {Array} arr array of things to switch
+ * @param  {Function} functions switch functions
+ * @return {Array} switched array
+ * 
+ */
+
+switchArrayAll = saa = (arr,...functions) => ArrSwitch(1,arr,...functions)
+
+
+/**
+ * Perform a switch function and return an array
+ * @param  {Array} arr array of things to switch
+ * @param  {Function} functions switch functions
+ * @return {Array} switched array
+ * 
+ */
+
 switchArrayIndexOne = sai1 = (arr,...functions) => ArrSwitch(2,arr,...functions)
+
+
+/**
+ * Perform a switch function and return an array
+ * @param  {Array} arr array of things to switch
+ * @param  {Function} functions switch functions
+ * @return {Array} switched array
+ * 
+ */
+
 switchArrayIndexAll = saia = (arr,...functions) => ArrSwitch(3,arr,...functions)
 
+
+/**
+ * Perform a switch function and return an array
+ * @param  {Number} index
+ * @param  {Array} arr array of things to switch
+ * @param  {Function} functions switch functions
+ * @return {Array} switched array
+ * 
+ * 
+ */
 ArrSwitch = (index,arr,...functions)=> [].concat(typeof arr == "object" && arr[Symbol.iterator] && !Array.isArray(arr) ? [...arr] : arr).reduce((i, j,n) => {
     // console.log(arr, ...functions,functions.entries(), i, j)
     for ([k, l] of functions.entries()) {
@@ -4645,7 +4700,7 @@ ArrSwitch = (index,arr,...functions)=> [].concat(typeof arr == "object" && arr[S
 
 
 /**
- * @param  {Object[]} ...elementObjects List of objects to create
+ * @param  {Object[]} elementObjects List of objects to create
  * @return {jQuery Object} The Elements
  */
 createNodes = (...elementObjects) => flatten(elementObjects).reduce((elements, i) => {
@@ -4709,7 +4764,7 @@ createNodes = (...elementObjects) => flatten(elementObjects).reduce((elements, i
 }, $j())
 /**
  * Take an element and reduce it to its base parts
- * @param  {Node} ...nodes Nodes 
+ * @param  {Node} nodes Nodes 
  * @return {Object[]} deconstructed nodes
  */
 deconstructNodes = (...nodes) => flatten(nodes).map(i=>ofe([...i.attributes].map(i=>[i.name,i.value]).concat([["ele",i.tagName.toLowerCase()],["text",i.innerText]]).filter(i=>i[1])))
@@ -4838,7 +4893,25 @@ dateFormat.i18n = {
 		"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
 	]
 };
-
+/**
+ * Get the width of styled text
+ * @param txt Text to Size
+ * @param fontName Name of Font to use
+ * @param fontsize Size of font to use
+ */
+function getWidthOfText(txt, fontName = "", fontsize) {
+    if (getWidthOfText.c === undefined) {
+        getWidthOfText.c = document.createElement('canvas');
+        getWidthOfText.ctx = getWidthOfText.c.getContext('2d');
+        getWidthOfText.spanClass=new DOMParser().parseFromString('<span style="display: block; position: absolute; visibility: hidden;"></span>',"text/html").body.firstChild;
+        document.body.appendChild(getWidthOfText.spanClass)
+    }
+    var className = (fontName[0] == ".") && fontName.replace(/\./g, " ")
+    if (getWidthOfText.class != (getWidthOfText.class = className || getWidthOfText.class))
+        getWidthOfText.classFont = (getWidthOfText.spanClass.className = className,getComputedStyle(getWidthOfText.spanClass).font);
+    getWidthOfText.ctx.font = className ? getWidthOfText.classFont : fontsize + ' ' + fontName;
+    return getWidthOfText.ctx.measureText(txt).width;
+}
 
 reduceObj = (j, i, k, l) => ([h, i] = i,
 	j[l.slice(0, k).map(m => `["${m[0]}"]`).join("") + (k ? "." : "") + h] = i,
@@ -4870,7 +4943,8 @@ findObj = (a, b, c = "\0", z = a, y = []) => {
 						e = e.slice().reverse().reduce(reduceObj, {
 							__arr__: e,
 							__y__: y,
-							__z__: z
+							__z__: z,
+							...e.map(i=>i[1])
 						})
 					return e
 
@@ -4946,15 +5020,6 @@ try {
 	}
 } finally {}
 
-tryCallback = (o,oo) => {
-    try {
-        return o.call(this, oo)
-    } catch {
-        return ""
-    }
-}
-
-parseCallback = (f, ...o) => (o = (f && f != 0 && f != void 0) ? o.map(o => typeof f === "boolean" ? f : typeof f === "function" ? tryCallback(f, o) : o[f]).map(aa => aa == void 0 ? "" : aa) : flatten(o), o.length == 1 ? o[0] : o)
 
 /**
  * Trigger an action after a certain number of events in rapid succession
@@ -4987,12 +5052,12 @@ mpe = multiPressEvent = (key,target,callback,presses=3,nodes=document.body,input
 
             // Set Click Events
             for (var click of clicks || []) {
-                nodes.on("click", targets, function (e) {
+                nodes.on("mousedown", targets, function (e) {
                 	if ((e.target.matches("input,textarea,.note-editable,.note-editable *") || e.currentTarget.matches("input,textarea,.note-editable,.note-editable *")) && !input)
                 		return 1;
                 	return multiPressHandler(e, this, click, presses, callback)
                 })
-                yield[nodes, "click", targets, callback]
+                yield[nodes, "mousedown", targets, callback]
             }
 
             // Set Key Events
@@ -5012,8 +5077,9 @@ mpe = multiPressEvent = (key,target,callback,presses=3,nodes=document.body,input
  * Process the events
  * @param  {UIEvent} event The registered event
  * @param  {HTMLElement} element The element that receieved the event
- * @param  {String} key AutoHotKey style hotkey 
- * @param  {Function} callback
+ * @param  {String} key AutoHotKey style hotkey
+ * @param  {Number}  presses number of presses before executing function
+ * @param  {Function} callback function to execute
  */
 multiPressHandler = (event,element,key,presses,callback)=>{
     //log(event, element, key, presses, callback)
@@ -5021,46 +5087,108 @@ multiPressHandler = (event,element,key,presses,callback)=>{
     //     if (event.key == "Escape")
     //     debugger;
 
-    var keyModifiers = {
-        "^": "ctrlKey",
-        "!": "altKey",
-        "+": "shiftKey"
-    }, click;
-    [combination,modifiers,key] = key.match(/([!^+]*)(.+)(?=::)/);
+    // var keyModifiers = {
+    //     "^": "ctrlKey",
+    //     "!": "altKey",
+    //     "+": "shiftKey"
+    // }, click;
+//     [combination,modifiers,key] = key.match(/([!^+]*)(.+)(?=::)/);
 
-    key = key.replace("ESC", "Escape")
+    // key = key.replace("ESC", "Escape")
 
-    // Check if the correct modifiers (if any at all) were pressed
-    for (var [symbol,modifier] of oe(keyModifiers)) {
-        if (!~[...(modifiers || "")].indexOf(symbol) == event[modifier])
-            return 1
-    }
+    // // Check if the correct modifiers (if any at all) were pressed
+    // for (var [symbol,modifier] of oe(keyModifiers)) {
+    //     if (!~[...(modifiers || "")].indexOf(symbol) == event[modifier])
+    //         return 1
+    // }
 
-    // If it's a mouse click, end handler if not the correct button
-    if (click = modifiers.match(/([LMR])Button/i) && [..."LMR"].indexOf(click[1].toUpperCase()) != event.button)
-        return 1
+    // // If it's a mouse click, end handler if not the correct button
+    // if (click = modifiers.match(/([LMR])Button/i) && [..."LMR"].indexOf(click[1].toUpperCase()) != event.button)
+    //     return 1
 
-    // Ignore if click already verified
-    // If not the correct key, end handler
-    if (!click && (key != event.key))
-        return 1
+    // // Ignore if click already verified
+    // // If not the correct key, end handler
+    // if (!click && (key != event.key))
+    //     return 1
 
+	if (parseKey(event).replace("Cl","Button") + "::" != key)
+	return 1
     var $this = $j(element)
-    clearTimeout($this.data(combination+"timeOut") | 0)
-    $this.data(combination, $this.data(combination) + 1 || 1);
-    if ($this.data(combination) >= presses)
-		$this.data(combination, 0),callback($this)
+    clearTimeout($this.data(key+"timeOut") | 0)
+    $this.data(key, $this.data(key) + 1 || 1);
+    if ($this.data(key) >= presses)
+		$this.data(key, 0),callback.apply($this,[event])
     else
-        $this.data(combination+"timeOut", setTimeout(()=>{
-            $this.data(combination, 0)
+        $this.data(key+"timeOut", setTimeout(()=>{
+            $this.data(key, 0)
         }
         , 500))
 
     return 1;
 }
 
-fieldSorter = (...fields) => (x, y) => chunks([].concat(...fields.map(i=>[i,i])).slice(1, -1), 2).map(i => [i[1], i[0]]).map((o, p) => ((Array.isArray(o) && ([o, p] = o)), ([a,b] = parseCallback(o,x,y)), (-(p < 0) || 1) * (+(a > b) || -(a < b)))).reduce((c, d) => c || d, 0);
+/**
+ * @param  {UIEvent} e Event info to parse
+ * @return {String} AHK style hotkey name
+ */
+parseKey = (e) => [["^","ctrlKey"],["!","altKey"],["+","shiftKey"]].reduce((i,j)=>i+=e[j[1]] ? j[0]:"","")+([..."LMR"][e.button]||e.key).replace(/(\w{3}).+/g,(x,y)=>y.toUpperCase()).replace(/[LMR]/,"$&Cl")
+
+
+/**
+ * @param  {boolean} callback boolean to return
+ * @param  {function} callback callback function
+ * @param  {Object} objects objects to parse
+ * @return {Object} Objects with the callback successfully used
+ */
+parseCallback = (callback, ...objects) => (Object.entries({tryCallback:(t,e)=>{try{return t.call(this,e)}catch(t){return""}},flatten:(...t)=>[...function*(){for(var e=0,l=[t],r=[];e<l.length||r.length;e++)e==l.length?[e,l]=r.pop():null!=l[e]&&l[e][Symbol.iterator]&&"object"==typeof l[e]?(r.push([e,l]),l=l[e],e=-1):yield l[e]}()]}).forEach(t=>void 0===this[t[0]]&&(this[t[0]]=t[1])), objects = (callback && callback != 0 && callback != void 0) ? objects.map(o => typeof callback === "boolean" ? callback : typeof callback === "function" ? tryCallback(callback, o) : o[callback]).map(aa => aa == void 0 ? "" : aa) : flatten(objects), objects.length == 1 ? objects[0] : objects);
+
+/**
+ * sort objects by fields
+ * @param {Number} fields[even] sort order (positive (+) for ascending, negative (-) for descending)
+ * @param {Number} fields[odd] fields to sort
+ * @return {Function} sort function to use in Array.prototype.sort
+ */
+fieldSorter = (...fields) => (x, y) => Array(fields.length -1).fill().map((i,j)=>[fields[j+1],fields[j+0]]).map((o, p) => ((Array.isArray(o) && ([o, p] = o)), ([a,b] = parseCallback(o,x,y)), (-(p < 0) || 1) * (+(a > b) || -(a < b)))).reduce((c, d) => c || d, 0);
 //dispatch(new Event("bonjour"))
+
+
+function placeCaretAtEnd(el) {
+    el.focus();
+    if (typeof window.getSelection != "undefined"
+            && typeof document.createRange != "undefined") {
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+    } else if (typeof document.body.createTextRange != "undefined") {
+        var textRange = document.body.createTextRange();
+        textRange.moveToElementText(el);
+        textRange.collapse(false);
+        textRange.select();
+    }
+}
+
+/**
+ * Get the width of styled text
+ * @param txt Text to Size
+ * @param fontName Name of Font to use
+ * @param fontsize Size of font to use
+ */
+function getWidthOfText(txt, fontName = "", fontsize) {
+    if (getWidthOfText.c === undefined) {
+        getWidthOfText.c = document.createElement('canvas');
+        getWidthOfText.ctx = getWidthOfText.c.getContext('2d');
+        getWidthOfText.spanClass=createNodes({ele:"span",style:{display:"block",position:"absolute",visibility:"hidden"}}).appendTo("body")[0]
+    }
+    var className = (fontName[0] == ".") && fontName.replace(/\./g, " ")
+    if (getWidthOfText.class != (getWidthOfText.class = className || getWidthOfText.class))
+        getWidthOfText.classFont = (getWidthOfText.spanClass.className = className,getComputedStyle(getWidthOfText.spanClass).font);
+    getWidthOfText.ctx.font = className ? getWidthOfText.classFont : fontsize + ' ' + fontName;
+    return getWidthOfText.ctx.measureText(txt).width;
+}
+
 
 try {
 	if (document.title == "Gmail")
