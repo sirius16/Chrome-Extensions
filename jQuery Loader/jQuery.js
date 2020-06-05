@@ -4406,47 +4406,47 @@ nodeToXPath = node => node instanceof HTMLDocument ? "" : "//"+[...(function*(){
 
 $xx = (selectors, nodes = document, jq = !1, ...args) => {
 
-    [jq, nodes, selectors] = sa1(flatten(selectors, nodes, jq, ...args), b => ~["number", "integer"].indexOf(typeof b), a => a instanceof Node, a => typeof a === "string")
-    // if (b[Symbol.iterator] && typeof b == "object")
-    // 	return [...b].reduce((z, b) => (c ? $j.merge(z,$xx(a,b)) : z.concat($xx(a,b))), (c ? $j([]) : []));
-    // 	i = b instanceof Node && b || $j.parseXML(b).cloneNode(true) //,1);
-    selectors = sai1(flatten(selectors).join("|").split("|"), /\/?(value\(\)|@value|value)/, /\/?(html\(\)|@html|html)/, /\/?(HTML\(\)|@HTML|HTML)/,/\/?(txt\(\)|@txt|txt)/)
+	[jq, nodes, selectors] = sa1(flatten(selectors, nodes, jq, ...args), b => ~["number", "integer"].indexOf(typeof b), a => a instanceof Node, a => typeof a === "string")
+	// if (b[Symbol.iterator] && typeof b == "object")
+	// 	return [...b].reduce((z, b) => (c ? $j.merge(z,$xx(a,b)) : z.concat($xx(a,b))), (c ? $j([]) : []));
+	// 	i = b instanceof Node && b || $j.parseXML(b).cloneNode(true) //,1);
+	selectors = sai1(flatten(selectors).join("|").split("|"), /\/?(value\(\)|@value|value)/, /\/?(html\(\)|@html|html)/, /\/?(HTML\(\)|@HTML|HTML)/,/\/?(txt\(\)|@txt|txt)/)
 
-    var result = flatten([nodes || document]).reduce((node, b) => {
-        for (a of selectors) {
-            // var doc = document.implementation.createHTMLDocument()
-            var a = flatten(a)
-            //a[0] = (b instanceof Document ? a[0] : a[0].replace(/^\.?\/\//, ".//")).replace(/\/?(value\(\)|@value|value)|\/?(html\(\)|@html|html)|\/?(HTML\(\)|@HTML|HTML)/, "");
+	var result = flatten([nodes || document]).reduce((node, b) => {
+		for (a of selectors) {
+			// var doc = document.implementation.createHTMLDocument()
+			var a = flatten(a)
+			//a[0] = (b instanceof Document ? a[0] : a[0].replace(/^\.?\/\//, ".//")).replace(/\/?(value\(\)|@value|value)|\/?(html\(\)|@html|html)|\/?(HTML\(\)|@HTML|HTML)/, "");
 			a[0] = a[0].replaceMap(/^(?=\w)/, ".//",/^\/+/,".$&",
 			"\\.{3}",nodeToXPath(b)
 			, /\/?(value\(\)|@value|value)|\/?(html\(\)|@html|html)|\/?(HTML\(\)|@HTML|HTML)|\/?(txt\(\)|@txt|txt)/, "", "g")
-            // i instanceof HTMLDocument && (doc = b) || i instanceof HTMLHeadElement && (doc.head = i) || i instanceof HTMLBodyElement && (doc.body = i) || (doc.body.innerHTML = i.outerHTML);
-            // doc = i
-            var doc = b.ownerDocument || b
-            var nsResolver = doc.createNSResolver(doc.documentElement);
-            var xpathResult = doc.evaluate(a[0], b, null, 5, null);
+			// i instanceof HTMLDocument && (doc = b) || i instanceof HTMLHeadElement && (doc.head = i) || i instanceof HTMLBodyElement && (doc.body = i) || (doc.body.innerHTML = i.outerHTML);
+			// doc = i
+			var doc = b.ownerDocument || b
+			var nsResolver = doc.createNSResolver(doc.documentElement);
+			var xpathResult = doc.evaluate(a[0], b, null, 5, null);
 
 
 
 
-            while (elem = xpathResult.iterateNext())
-                switch (a[1]) {
-                    case 0:
-                    case 1:
+			while (elem = xpathResult.iterateNext())
+				switch (a[1]) {
+					case 0:
+					case 1:
 					case 3:
-                        node.push(elem[["value", "innerHTML",,"innerText"][a[1]]] || elem)
-                        break;
-                    case 2:
-                        node.push(elem.outerHTML || elem.textContent || elem)
+						node.push(elem[["value", "innerHTML",,"innerText"][a[1]]] || elem)
 						break;
-                    default:
-                        node.push(elem)
-                        break;
-                };
-        }
-        return node
-    }, Object.assign([],{xx:function(a,jq=0,...args){return $xx(a,this,jq,...args)}}))
-    return (jq||[]).pop() ? $j(result) : result;
+					case 2:
+						node.push(elem.outerHTML || elem.textContent || elem)
+						break;
+					default:
+						node.push(elem)
+						break;
+				};
+		}
+		return node
+	}, Object.assign([],{xx:function(a,jq=0,...args){return $xx(a,this,jq,...args)}}))
+	return (jq||[]).pop() ? $j(result) : result;
 }
 
 XSLT = (x, y) => {
@@ -4473,35 +4473,35 @@ ofe = Object.fromEntries
 o2o = a => ofe(oe(a))
 
 function extractURL(u) {
-    try {
-        return new window.URL(u.replace(/chrome-extension:\/\/klbibkeccnjlkjkiokjodocebajanakg\/suspended.html#ttl=.+&uri=/, ""))
-    }
-    catch {
-        return u
-    }
+	try {
+		return new window.URL(u.replace(/chrome-extension:\/\/klbibkeccnjlkjkiokjodocebajanakg\/suspended.html#ttl=.+&uri=/, ""))
+	}
+	catch {
+		return u
+	}
 }
 
 
 getSearchParams = u => ofe([...extractURL(u).searchParams.entries()])
 
 function sortByName(a, sort = 0, ...b) {
-    if (!~[-1, 1].indexOf(sort)) {
-        b = [].concat(sort, b)
-        sort = 0
-    }
-    var c = oe(flatten(b).reduce((i, j) => (i[parseCallback(a, j)] = j, i), new Proxy({}, arrins)))
-    return sort ? c.sort(fieldSorter(sort, a => a[1].length)) : c
+	if (!~[-1, 1].indexOf(sort)) {
+		b = [].concat(sort, b)
+		sort = 0
+	}
+	var c = oe(flatten(b).reduce((i, j) => (i[parseCallback(a, j)] = j, i), new Proxy({}, arrins)))
+	return sort ? c.sort(fieldSorter(sort, a => a[1].length)) : c
 }
 
 function countByName(a, sort = 0, ...b) {
-    if (!~[-1, 1].indexOf(sort)) {
-        b = [].concat(sort, ...b)
-        sort = 0
-    }
-    else
-        b = [].concat(...b)
-    var c = oe(b.reduce((i, j) => (i[parseCallback(a, j)]++, i), new Proxy({}, inc)))
-    return sort ? c.sort(fieldSorter(sort, 1)) : c
+	if (!~[-1, 1].indexOf(sort)) {
+		b = [].concat(sort, ...b)
+		sort = 0
+	}
+	else
+		b = [].concat(...b)
+	var c = oe(b.reduce((i, j) => (i[parseCallback(a, j)]++, i), new Proxy({}, inc)))
+	return sort ? c.sort(fieldSorter(sort, 1)) : c
 }
 
 arrins = {
@@ -4544,14 +4544,14 @@ NextPrev = (l, m = 0) => $j("body").keydown(e => ((e.target.matches("input,texta
 }) && e.key in np && np[e.key](l, m),1))
 fullWH = (a, b = "", c = 1) => $j(a).toggleClass(c ? "width" : "height", 1) && $j("body").keypress(e => e.key == "*" && $j(a).toggleClass("width height")) && $j("<style />", {
 	text: `${a}.width {
-    width: 100vw;
+	width: 100vw;
 }
 ${a}.height {
-    height: 100vh;
+	height: 100vh;
 }
 
 ${b} {
-    width: initial;
+	width: initial;
 }`
 }).appendTo("head") && NextPrev(a);
 // load()
@@ -4588,13 +4588,13 @@ openChunks = (l, n, r = 0) => openc = new Proxy(r ? chunks(l, n).reverse() : chu
 
 flatten = (...a) => [...(function*(){for (var i=0,arr=[a],prevarr = [];i<arr.length || prevarr.length;i++) if (i==arr.length) [i,arr] = prevarr.pop(); else if (arr[i] != void 0 && arr[i][Symbol.iterator] && typeof arr[i] == "object") {prevarr.push([i,arr]);arr=arr[i],i=-1} else yield arr[i]})()]
 // [...(function* FLATTEN(array) {
-//     for (const item of array) {
-//         if (item != void 0 && item[Symbol.iterator] && typeof item == "object") {
-//             yield* FLATTEN(item);
-//         } else {
-//             yield item;
-//         }
-//     }
+//	 for (const item of array) {
+//		 if (item != void 0 && item[Symbol.iterator] && typeof item == "object") {
+//			 yield* FLATTEN(item);
+//		 } else {
+//			 yield item;
+//		 }
+//	 }
 // })([a])];
 
 
@@ -4608,7 +4608,7 @@ range = (...a) => [...(function* RANGE(begin, end, interval = 1) {
 	}
 })(...a)];
 chunks = (l, n = 0) => n ? [...(function* CHUNKS(l, n) {
-	for (i of range(0, l.length, n)) yield l.slice(i, i + n);
+	for ($i of range(0, l.length, n)) yield l.slice($i, $i + n);
 })(l, n)] : l
 // urlq = a => ofe(new URL(a).searchParams.entries())
 urlq = a => ofe(URLSearchParams(location.sear))
@@ -4673,12 +4673,12 @@ switchArrayIndexAll = saia = (arr,...functions) => ArrSwitch(3,arr,...functions)
  * 
  */
 ArrSwitch = (index,arr,...functions)=> [].concat(typeof arr == "object" && arr[Symbol.iterator] && !Array.isArray(arr) ? [...arr] : arr).reduce((i, j,n) => {
-    // console.log(arr, ...functions,functions.entries(), i, j)
-    for ([k, l] of functions.entries()) {
-        // console.log(i, j, k, l);
-        for (m of flatten([].concat(l))) {
-            // console.log(i, j, k, l, m);
-            if ((typeof m === "boolean" && m) || (m instanceof RegExp && m.exec(j)) || (typeof m !== "function" && j == m) || (typeof m === "function" && m(j)))
+	// console.log(arr, ...functions,functions.entries(), i, j)
+	for ([k, l] of functions.entries()) {
+		// console.log(i, j, k, l);
+		for (m of flatten([].concat(l))) {
+			// console.log(i, j, k, l, m);
+			if ((typeof m === "boolean" && m) || (m instanceof RegExp && m.exec(j)) || (typeof m !== "function" && j == m) || (typeof m === "function" && m(j)))
 			switch (index) {
 				case 1:
 					i = mvs(i, k, j)
@@ -4692,9 +4692,9 @@ ArrSwitch = (index,arr,...functions)=> [].concat(typeof arr == "object" && arr[S
 				case 3:
 					i = mvs(i,n,k)
 			}
-        }
-    }
-    return i
+		}
+	}
+	return i
 }, index & 2 ? flatten(arr) : [])
 // }, []).map((o,p)=>(index & 2) && (o != void 0) && [p].concat([[flatten(arr)[p]].concat(o)]) || o)
 
@@ -4893,25 +4893,7 @@ dateFormat.i18n = {
 		"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
 	]
 };
-/**
- * Get the width of styled text
- * @param txt Text to Size
- * @param fontName Name of Font to use
- * @param fontsize Size of font to use
- */
-function getWidthOfText(txt, fontName = "", fontsize) {
-    if (getWidthOfText.c === undefined) {
-        getWidthOfText.c = document.createElement('canvas');
-        getWidthOfText.ctx = getWidthOfText.c.getContext('2d');
-        getWidthOfText.spanClass=new DOMParser().parseFromString('<span style="display: block; position: absolute; visibility: hidden;"></span>',"text/html").body.firstChild;
-        document.body.appendChild(getWidthOfText.spanClass)
-    }
-    var className = (fontName[0] == ".") && fontName.replace(/\./g, " ")
-    if (getWidthOfText.class != (getWidthOfText.class = className || getWidthOfText.class))
-        getWidthOfText.classFont = (getWidthOfText.spanClass.className = className,getComputedStyle(getWidthOfText.spanClass).font);
-    getWidthOfText.ctx.font = className ? getWidthOfText.classFont : fontsize + ' ' + fontName;
-    return getWidthOfText.ctx.measureText(txt).width;
-}
+
 
 reduceObj = (j, i, k, l) => ([h, i] = i,
 	j[l.slice(0, k).map(m => `["${m[0]}"]`).join("") + (k ? "." : "") + h] = i,
@@ -4996,7 +4978,7 @@ Date.prototype.format = function (mask, utc) {
 	return dateFormat(this, mask, utc);
 };
 
-for ([i, j] of Object.entries({
+for ([$i, j] of Object.entries({
 		"AddDays": function (d) {
 			return new Date(this.setDate(this.getDate() + d))
 		},
@@ -5009,7 +4991,7 @@ for ([i, j] of Object.entries({
 		"AddYears": function (d) {
 			return new Date(this.setYear(this.getFullYear() + d))
 		}
-	})) Date.prototype[i] = j
+	})) Date.prototype[$i] = j
 Date["fromTime"] = t=>new Date(new Date().setHours(...t.split(":")))
 try {
 	if ("X2JS" in window) {
@@ -5031,47 +5013,47 @@ try {
  * @param  {Number} presses=3 number of presses before executing function
  */
 mpe = multiPressEvent = (key,target,callback,presses=3,nodes=document.body,input=!1,...args)=>{
-    log(key, target, callback, presses, ...args)
-    // Parse arguments
-    var [clicks,buttons,nodes,inputs,presses,callbacks,targets] = sa1(flatten(key, target, callback, presses, ...args), /[LMR]Button:*$/i, /::$/, a=>a instanceof Node || a instanceof $j,a=>typeof a =="boolean", a=>typeof a == "number", a=>typeof a == "function", a=>typeof a == "string")
+	log(key, target, callback, presses, ...args)
+	// Parse arguments
+	var [clicks,buttons,nodes,inputs,presses,callbacks,targets] = sa1(flatten(key, target, callback, presses, ...args), /[LMR]Button:*$/i, /::$/, a=>a instanceof Node || a instanceof $j,a=>typeof a =="boolean", a=>typeof a == "number", a=>typeof a == "function", a=>typeof a == "string")
 
-    // Get number of presses
-    presses = (presses || [3]).pop()
+	// Get number of presses
+	presses = (presses || [3]).pop()
 
-    // turn targs to css string
-    targets = (targets || [""]).join(",")
+	// turn targs to css string
+	targets = (targets || [""]).join(",")
 
-    // Get targeted nodes
+	// Get targeted nodes
 	nodes = $j(flatten(nodes || document.body))
 	
 	input = (inputs || [!1]).pop()
 
-    return [...(function *LOOP_CALLBACKS(clicks, buttons, presses, callbacks, targets) // Loop through callbacks
-    {
-        for (var callback of callbacks || []) {
+	return [...(function *LOOP_CALLBACKS(clicks, buttons, presses, callbacks, targets) // Loop through callbacks
+	{
+		for (var callback of callbacks || []) {
 
-            // Set Click Events
-            for (var click of clicks || []) {
-                nodes.on("mousedown", targets, function (e) {
-                	if ((e.target.matches("input,textarea,.note-editable,.note-editable *") || e.currentTarget.matches("input,textarea,.note-editable,.note-editable *")) && !input)
-                		return 1;
-                	return multiPressHandler(e, this, click, presses, callback)
-                })
-                yield[nodes, "mousedown", targets, callback]
-            }
+			// Set Click Events
+			for (var click of clicks || []) {
+				nodes.on("mousedown", targets, function (e) {
+					if ((e.target.matches("input,textarea,.note-editable,.note-editable *") || e.currentTarget.matches("input,textarea,.note-editable,.note-editable *")) && !input)
+						return 1;
+					return multiPressHandler(e, this, click, presses, callback)
+				})
+				yield[nodes, "mousedown", targets, callback]
+			}
 
-            // Set Key Events
-            for (var button of buttons || []) {
-                nodes.on("keydown", targets, function (e) {
-                	if ((e.target.matches("input,textarea,.note-editable,.note-editable *") || e.currentTarget.matches("input,textarea,.note-editable,.note-editable *")) && !input)
-                		return 1;
-                	return multiPressHandler(e, this, button, presses, callback)
-                })
-                yield[nodes, "keydown", targets, callback]
-            }
-        }
-    }
-    )(clicks, buttons, presses, callbacks, targets)]
+			// Set Key Events
+			for (var button of buttons || []) {
+				nodes.on("keydown", targets, function (e) {
+					if ((e.target.matches("input,textarea,.note-editable,.note-editable *") || e.currentTarget.matches("input,textarea,.note-editable,.note-editable *")) && !input)
+						return 1;
+					return multiPressHandler(e, this, button, presses, callback)
+				})
+				yield[nodes, "keydown", targets, callback]
+			}
+		}
+	}
+	)(clicks, buttons, presses, callbacks, targets)]
 }
 /**
  * Process the events
@@ -5082,49 +5064,49 @@ mpe = multiPressEvent = (key,target,callback,presses=3,nodes=document.body,input
  * @param  {Function} callback function to execute
  */
 multiPressHandler = (event,element,key,presses,callback)=>{
-    //log(event, element, key, presses, callback)
+	//log(event, element, key, presses, callback)
 
-    //     if (event.key == "Escape")
-    //     debugger;
+	//	 if (event.key == "Escape")
+	//	 debugger;
 
-    // var keyModifiers = {
-    //     "^": "ctrlKey",
-    //     "!": "altKey",
-    //     "+": "shiftKey"
-    // }, click;
-//     [combination,modifiers,key] = key.match(/([!^+]*)(.+)(?=::)/);
+	// var keyModifiers = {
+	//	 "^": "ctrlKey",
+	//	 "!": "altKey",
+	//	 "+": "shiftKey"
+	// }, click;
+//	 [combination,modifiers,key] = key.match(/([!^+]*)(.+)(?=::)/);
 
-    // key = key.replace("ESC", "Escape")
+	// key = key.replace("ESC", "Escape")
 
-    // // Check if the correct modifiers (if any at all) were pressed
-    // for (var [symbol,modifier] of oe(keyModifiers)) {
-    //     if (!~[...(modifiers || "")].indexOf(symbol) == event[modifier])
-    //         return 1
-    // }
+	// // Check if the correct modifiers (if any at all) were pressed
+	// for (var [symbol,modifier] of oe(keyModifiers)) {
+	//	 if (!~[...(modifiers || "")].indexOf(symbol) == event[modifier])
+	//		 return 1
+	// }
 
-    // // If it's a mouse click, end handler if not the correct button
-    // if (click = modifiers.match(/([LMR])Button/i) && [..."LMR"].indexOf(click[1].toUpperCase()) != event.button)
-    //     return 1
+	// // If it's a mouse click, end handler if not the correct button
+	// if (click = modifiers.match(/([LMR])Button/i) && [..."LMR"].indexOf(click[1].toUpperCase()) != event.button)
+	//	 return 1
 
-    // // Ignore if click already verified
-    // // If not the correct key, end handler
-    // if (!click && (key != event.key))
-    //     return 1
+	// // Ignore if click already verified
+	// // If not the correct key, end handler
+	// if (!click && (key != event.key))
+	//	 return 1
 
 	if (parseKey(event).replace("Cl","Button") + "::" != key)
 	return 1
-    var $this = $j(element)
-    clearTimeout($this.data(key+"timeOut") | 0)
-    $this.data(key, $this.data(key) + 1 || 1);
-    if ($this.data(key) >= presses)
+	var $this = $j(element)
+	clearTimeout($this.data(key+"timeOut") | 0)
+	$this.data(key, $this.data(key) + 1 || 1);
+	if ($this.data(key) >= presses)
 		$this.data(key, 0),callback.apply($this,[event])
-    else
-        $this.data(key+"timeOut", setTimeout(()=>{
-            $this.data(key, 0)
-        }
-        , 500))
+	else
+		$this.data(key+"timeOut", setTimeout(()=>{
+			$this.data(key, 0)
+		}
+		, 500))
 
-    return 1;
+	return 1;
 }
 
 /**
@@ -5153,21 +5135,21 @@ fieldSorter = (...fields) => (x, y) => Array(fields.length -1).fill().map((i,j)=
 
 
 function placeCaretAtEnd(el) {
-    el.focus();
-    if (typeof window.getSelection != "undefined"
-            && typeof document.createRange != "undefined") {
-        var range = document.createRange();
-        range.selectNodeContents(el);
-        range.collapse(false);
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
-    } else if (typeof document.body.createTextRange != "undefined") {
-        var textRange = document.body.createTextRange();
-        textRange.moveToElementText(el);
-        textRange.collapse(false);
-        textRange.select();
-    }
+	el.focus();
+	if (typeof window.getSelection != "undefined"
+			&& typeof document.createRange != "undefined") {
+		var range = document.createRange();
+		range.selectNodeContents(el);
+		range.collapse(false);
+		var sel = window.getSelection();
+		sel.removeAllRanges();
+		sel.addRange(range);
+	} else if (typeof document.body.createTextRange != "undefined") {
+		var textRange = document.body.createTextRange();
+		textRange.moveToElementText(el);
+		textRange.collapse(false);
+		textRange.select();
+	}
 }
 
 /**
@@ -5177,16 +5159,47 @@ function placeCaretAtEnd(el) {
  * @param fontsize Size of font to use
  */
 function getWidthOfText(txt, fontName = "", fontsize) {
-    if (getWidthOfText.c === undefined) {
-        getWidthOfText.c = document.createElement('canvas');
-        getWidthOfText.ctx = getWidthOfText.c.getContext('2d');
-        getWidthOfText.spanClass=createNodes({ele:"span",style:{display:"block",position:"absolute",visibility:"hidden"}}).appendTo("body")[0]
+	if (getWidthOsfText.c === undefined) {
+		getWidthOfText.c = document.createElement('canvas');
+		getWidthOfText.ctx = getWidthOfText.c.getContext('2d');
+		getWidthOfText.spanClass=createNodes({ele:"span",style:{display:"block",position:"absolute",visibility:"hidden"}}).appendTo("body")[0]
+	}
+	var className = (fontName[0] == ".") && fontName.replace(/\./g, " ")
+	if (getWidthOfText.class != (getWidthOfText.class = className || getWidthOfText.class))
+		getWidthOfText.classFont = (getWidthOfText.spanClass.className = className,getComputedStyle(getWidthOfText.spanClass).font);
+	getWidthOfText.ctx.font = className ? getWidthOfText.classFont : fontsize + ' ' + fontName;
+	return getWidthOfText.ctx.measureText(txt).width;
+}
+
+
+getAncestor = (element,selector)=>{for (;!element.matches(selector+",html");element=element.parentElement);return element.matches(selector) ? element : null}
+
+// ==UserScript==
+// @name         Download Text to file
+// @version      1.0.6
+// @description  Download Text to file
+// @author       You
+// ==/UserScript==  
+/**
+ * Download a file with the information 
+ * @param   {String} datatype MIME filetype
+ * @param   {Object} text Text to be added to filename
+ * @param   {String} filename name of filename
+ */
+function download(datatype="text/plain", text="",filename="") {
+    [datatype,filename,text] = sa1([...arguments].slice(0,3).concat("text/plain"),/^[\w+-]+\/[\w+-]+$/g,/^[\w\-. ]+$/,true).map((i,j)=>j==1 ? i : i[0])
+    if (text == null && ([filename,text] = filename,!text))
+        text = filename;
+    else if (typeof text == "object") {
+        if (datatype == "text/plain")
+            datatype = "application/json"
+        text = JSON.stringify(text, null, 4);
     }
-    var className = (fontName[0] == ".") && fontName.replace(/\./g, " ")
-    if (getWidthOfText.class != (getWidthOfText.class = className || getWidthOfText.class))
-        getWidthOfText.classFont = (getWidthOfText.spanClass.className = className,getComputedStyle(getWidthOfText.spanClass).font);
-    getWidthOfText.ctx.font = className ? getWidthOfText.classFont : fontsize + ' ' + fontName;
-    return getWidthOfText.ctx.measureText(txt).width;
+    
+    var element = document.createElement('a');
+	element.setAttribute('href', 'data:' + datatype + ';charset=utf-8,' + encodeURIComponent(text));
+	element.setAttribute('download', flatten(filename||[""]).shift());
+	element.click();
 }
 
 
@@ -5201,5 +5214,5 @@ try {
 			subtree: !0,
 			childList: !0
 		})
-	load()
+	if (!window.$j || ~Error().stack.split("\n")[1].search(/\?_=\d+/)) load()
 } finally {}
