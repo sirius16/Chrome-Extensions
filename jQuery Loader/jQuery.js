@@ -830,6 +830,16 @@ load = () => {
 
 								}
 							}),
+							deepest: ia(function () {
+								return ia(function (seed, results) {
+									for (var i = seed.length; ~--i;) {
+										if (!seed[i]) continue;
+										results[i] = seed[i];
+										for (var j = i; ~--j;)
+											if (seed[j] && seed[j].contains(seed[i])) seed[j] = !1;
+									}
+								});
+							}),
 							lang: ia(function (a) {
 								return U.test(a || "") || ga.error("unsupported lang: " + a),
 									a = a.replace(_, aa).toLowerCase(),
@@ -4608,7 +4618,7 @@ range = (...a) => [...(function* RANGE(begin, end, interval = 1) {
 	}
 })(...a)];
 chunks = (l, n = 0) => n ? [...(function* CHUNKS(l, n) {
-	for ($i of range(0, l.length, n)) yield l.slice($i, $i + n);
+	for (i of range(0, l.length, n)) yield l.slice(i, i + n);
 })(l, n)] : l
 // urlq = a => ofe(new URL(a).searchParams.entries())
 urlq = a => ofe(URLSearchParams(location.sear))
@@ -4898,7 +4908,7 @@ dateFormat.i18n = {
 reduceObj = (j, i, k, l) => ([h, i] = i,
 	j[l.slice(0, k).map(m => `["${m[0]}"]`).join("") + (k ? "." : "") + h] = i,
 	j);
-findObj = (a, b, c = "\0", z = a, y = []) => {
+findObj = (a, b, c = "\0", z = a, y = [window,document]) => {
 	if (~y.indexOf(a))
 		return;
 	else
@@ -4915,7 +4925,7 @@ findObj = (a, b, c = "\0", z = a, y = []) => {
 			[b, a[b]]
 		];
 	else
-		for (var d of Object.keys(a))
+		for (var d in a)
 			if (e = findObj(a[d], b, c, z, y))
 				if (d in a) {
 					e = e.concat([
@@ -4978,7 +4988,7 @@ Date.prototype.format = function (mask, utc) {
 	return dateFormat(this, mask, utc);
 };
 
-for ([$i, j] of Object.entries({
+for ([i, j] of Object.entries({
 		"AddDays": function (d) {
 			return new Date(this.setDate(this.getDate() + d))
 		},
@@ -4991,7 +5001,7 @@ for ([$i, j] of Object.entries({
 		"AddYears": function (d) {
 			return new Date(this.setYear(this.getFullYear() + d))
 		}
-	})) Date.prototype[$i] = j
+	})) Date.prototype[i] = j
 Date["fromTime"] = t=>new Date(new Date().setHours(...t.split(":")))
 try {
 	if ("X2JS" in window) {
@@ -5113,7 +5123,7 @@ multiPressHandler = (event,element,key,presses,callback)=>{
  * @param  {UIEvent} e Event info to parse
  * @return {String} AHK style hotkey name
  */
-parseKey = (e) => [["^","ctrlKey"],["!","altKey"],["+","shiftKey"]].reduce((i,j)=>i+=e[j[1]] ? j[0]:"","")+([..."LMR"][e.button]||e.key).replace(/(\w{3}).+/g,(x,y)=>y.toUpperCase()).replace(/[LMR]/,"$&Cl")
+parseKey = (e) => [["^","ctrlKey"],["!","altKey"],["+","shiftKey"]].reduce((i,j)=>i+=e[j[1]] ? j[0]:"","")+([..."LMR"][e.button]||e.key).replace(/^Arrow/,"").replace(/(.).+(?=Down|Right|Up|Left)/,"$1").replace(/(\w{3}).+/g,(x,y)=>y.toUpperCase()).replace(/^[!+^]*[LMR]$/,"$&Cl")
 
 
 /**
@@ -5159,7 +5169,7 @@ function placeCaretAtEnd(el) {
  * @param fontsize Size of font to use
  */
 function getWidthOfText(txt, fontName = "", fontsize) {
-	if (getWidthOsfText.c === undefined) {
+	if (getWidthOfText.c === undefined) {
 		getWidthOfText.c = document.createElement('canvas');
 		getWidthOfText.ctx = getWidthOfText.c.getContext('2d');
 		getWidthOfText.spanClass=createNodes({ele:"span",style:{display:"block",position:"absolute",visibility:"hidden"}}).appendTo("body")[0]
