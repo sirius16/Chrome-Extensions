@@ -840,7 +840,7 @@ load = () => {
 										for (var j = i; ~--j;)
 											if (seed[j] && seed[j].contains(seed[i])) seed[j] = !1;
 									}
-								});
+							});
 							}),
 							lang: ia(function (a) {
 								return U.test(a || "") || ga.error("unsupported lang: " + a),
@@ -4338,6 +4338,28 @@ String.prototype.parse = function () {
 	})
 	return e
 }
+
+String.prototype.multiSplit = function(...splitters) {splitters = splitters.flat(999);if (splitters.length == 1) return this.split(splitters[0]);var finarr = [this+""];
+for (var i = 0, finarr,arr = finarr, this2=arr[i],prevarr = []; i < arr.length || prevarr.length; this2 = arr[i]) {
+    //debugger;
+    if (i == arr.length || prevarr.length==splitters.length) {
+        prevarr.pop();
+        if (!prevarr.length) continue;
+        [...prevarr].pop()[0]++
+        [i,arr] = [...prevarr].pop();
+    }
+    else if (typeof arr[i] == "string") {
+        prevarr.push([i,arr]=[0,arr[i]=this2.split(splitters[prevarr.length]).filter(x=>x)])
+        }
+        else {
+            throw "Rouge Array Encountered"
+            debugger;
+            prevarr.push([i,arr])
+            i = 0;arr=this2;
+        }
+}
+return finarr[0]
+}
 window.log = function () {
 	log.history = log.history || [];
 	log.history.push([arguments, new Error().stack]);
@@ -4365,26 +4387,43 @@ try {
 }
 str = JSON.stringify;
 
-obj = copyToClipboard = str => {
-if (typeof str == "object") text = JSON.stringify(text, null, 4);
-  const el = document.createElement('textarea');
-  el.value = str;
-  el.setAttribute('readonly', '');
-  el.style.position = 'absolute';
-  el.style.left = '-9999px';
-  document.body.appendChild(el);
-  const selected =
-    document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
-  el.select();
-  document.execCommand('copy');
-  document.body.removeChild(el);
-  if (selected) {
-    document.getSelection().removeAllRanges();
-    document.getSelection().addRange(selected);
-  }
+copyToClipboard = obj = (str, alerter = !1) => {
+	if (typeof str == "object") str = JSON.stringify(str, null, 4);
+	const el = document.createElement('textarea');
+	el.value = str;
+	el.setAttribute('readonly', '');
+	el.style.position = 'absolute';
+	el.style.left = '-9999px';
+	document.body.appendChild(el);
+	const selected =
+		document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
+	const active = document.activeElement
+	el.select();
+	document.execCommand('copy');
+	if (alerter) alert("Copied")
+	document.body.removeChild(el);
+	if (selected) {
+		document.getSelection().removeAllRanges();
+		document.getSelection().addRange(selected);
+	}
+	if (active) {
+		active.focus();
+}
 };
 
-
+RANGE = (start,end) => {
+	var range = document.createRange();
+	if (Array.isArray(start) && Array.isArray(end))
+	{
+		range.setStart(...start);
+		range.setEnd(...end);
+	} else if (start instanceof Node && end instanceof Node) {
+		range.setStartBefore(start);
+		range.setEndAfter(end);
+	} else if (start instanceof Node)
+	    range.selectNodeContents(start);
+	return range
+}
 
 getFilter = () => obj("@@"+location.origin.match(/https?:\/\/(?:www.*?\.)?(.+)/)[1]);
 
@@ -4433,19 +4472,86 @@ traceConsole = (all = 0) => ($j(document.body).children("pre:has(code#code)").le
 	"borderImageSource": "initial"
 })));
 
-floatConsole = a => (($j("pre code#console").length || $j(document.body).prepend($j('<pre><code class="xml" id="console">&nbsp;</code></pre>').css({
-	"border": "3px solid rgb(0, 0, 0)",
-	"color": "white",
-	"left": "0px",
-	"position": "fixed",
-	"top": "0px",
-	"backgroundColor": "rgb(43, 43, 43)",
-	"borderImageSource": "initial",
-	"width":"fit-content"
-}))),$j("pre > code#console").text(a));
+floatConsole = a => (document.querySelector("pre code#console") || createNodes({ele:"pre",style:{"border": "3px solid rgb(0, 0, 0)",
+"color": "white",
+"left": "0px",
+"position": "fixed",
+"top": "0px",
+"backgroundColor": "rgb(43, 43, 43)",
+"borderImageSource": "initial",
+"width":"fit-content"},children:{ele:"code#console.xml",text:"\xa0"}}).appendTo("body")[0]).innerText=a
 
 
 trace = (code = "", all = !1) => (code && $j(code).text((all | Error().stack.split("\n").length > 3 ? Error().stack : Error().error)), Error().stack)
+
+//monitor(nodeToCSS)
+nodeToCSS = node => {
+
+	function cartesianProduct(arr, joiner = " > ") {
+		return arr.reduce(function (a, b) {
+			return a.map(function (x) {
+				return b.map(function (y) {
+					var z, w;
+					[z, w, ...y] = y;
+					y[x[1]]++;
+					z = x[0].concat(z && (joiner || " > ") + z)
+					return [z, end.querySelectorAll(z).length, ...y];
+				})
+			}).reduce(function (a, b) {
+				return a.concat(b)
+			}, [])
+		})
+
+	}
+
+	if (!(node instanceof Node))
+		return "";
+	node = node instanceof Text ? node.parentElement : node;
+	var thisDoc = node.ownerDocument || window.document,
+		end = node.closest("[id],html>*") || thisDoc.documentElement,
+		path = [
+			["", -1, 0, 0, 0, 0, 0]
+		]
+	if (!thisDoc.contains(end)) return;
+	for (var tw = thisDoc.createTreeWalker(end, 1, null, !1), element = tw.currentNode = node, parent;
+		(parent = tw.parentNode()) && element != end && path.length && path[0][1] != 1; element = parent) { //while (tw.parentNode())
+		var nth = 0,
+			//nnth = 0,
+			count = 0,
+			classes = element.className && element.className.replace(/^|\s/g, ".")
+		for (var i = 0, tw2 = parent.children, curNode = tw2[0]; curNode && element.compareDocumentPosition(curNode) < 4; count++, nth += curNode.tagName == element.tagName, curNode = tw2[++i]);
+		path = cartesianProduct([
+			[
+				[element.tagName.toLowerCase() + "" + ":nth-of-type(" + nth + ")", 1],
+				[element.tagName.toLowerCase() + "" + ":nth-child(" + count + ")", 2],
+				["" + "" + ":nth-child(" + count + ")", 4]
+			].concat(classes ? [
+				//[element.tagName.toLowerCase() + classes + ":nth-of-type(" + nnth + ")", 0],
+				[element.tagName.toLowerCase() + classes, 0],
+				//[element.tagName.toLowerCase() + classes + ":nth-child(" + count + ")", 1],
+				//["" + classes + ":nth-of-type(" + nnth + ")", 4],
+				["" + classes + ":nth-child(" + count + ")", 3]
+			] : []), path
+		]).filter(i => i[1]).sort(fieldSorter(1, 1, 1, 6, 1, 5, 1, 4, 1, 3, 1, 2))
+		//debugger;
+	}
+	path = cartesianProduct([
+		[
+			[end.tagName.toLowerCase() + (end.id && ("#" + end.id)), 0]
+		], path
+	], element != end && node != end && " ")
+	path = [path, path.map(i => i[0])];
+	// (() => {
+	// 	var s = document.createElement("textarea");
+	// 	s.innerText = path[0];
+	// 	document.body.appendChild(s);
+	// 	s.select(), document.execCommand("copy");
+	// })()
+	obj(path[1][0]);
+	return path;
+
+}
+
 
 nodeToXPath = node => {
 	var end,element,path = node instanceof Text ? "/text()" : ""
@@ -4736,7 +4842,7 @@ chunks = (l, n = 0) => n ? [...(function* CHUNKS(l, n) {
 	for (i of range(0, l.length, n)) yield l.slice(i, i + n);
 })(l, n)] : l
 // urlq = a => ofe(new URL(a).searchParams.entries())
-urlq = a => ofe(URLSearchParams(location.sear))
+urlq = a => ofe(URLSearchParams(location.search))
 
 
 mvs = multiValueSet = (obj, key, ...values) => (obj[key] = mva(obj[key], ...values), obj)
@@ -4763,7 +4869,7 @@ switchArrayOne = sa1 = (arr,...functions) => ArrSwitch(0,arr,...functions)
  * 
  */
 
-switchArrayAll = saa = (arr,...functions) => ArrSwitch(1,arr,...functions)
+if (document.title != "Gmail") switchArrayAll = saa = (arr,...functions) => ArrSwitch(1,arr,...functions)
 
 
 /**
@@ -4838,12 +4944,17 @@ createNodes = (...elementObjects) => flatten(elementObjects).reduce((elements, i
 		// for (j of ["ele", "element"])
 		// 	if (j in i)
 		// 		delete i[j]
+		var {element,id,classes} =
+		imap((x,y)=>x.set(...y),("¶"+(i.ele || i.element)).multiSplit(/(?=[¶#.])/,/(?<=^.)/)).toObj(({".":"classes","#":"id","¶":"element"}))
 		
+		id = [].concat(i.id,id).filter(i=>i).pop();
+		classes = flatten(i.class,i.className,classes).join(" ");
 		
-		var contents = oe(i).map(i => [i[0].toLowerCase().replaceMap("text", "Text", "html", "HTML"), i[1]]) // change names to lowercase unless html or text
+		i = {...i,ele:null,element,id,class:classes,className:null}
+		var contents = oe(i).filter(i=>i[1] === 0 || i[1]).map(i => [i[0].toLowerCase().replaceMap("text", "Text", "html", "HTML"), i[1]]) // change names to lowercase unless html or text
 		
 		// var element = document.body
-		var element = document.createElement(i.ele || i.element) // Create element
+		var element = document.createElement(i.element) // Create element
 		
 		
 	/**
@@ -4853,7 +4964,7 @@ createNodes = (...elementObjects) => flatten(elementObjects).reduce((elements, i
 	 * 3 = Styles
 	 * 4 = Attribute
 	 */
-	var [,children,inner,events,styles,data,value,attributes] = sa1(contents, e=> ~["ele", "ele"].indexOf(e[0]),e => ~["child", "children"].indexOf(e[0]), e => "inner" + e[0] in element, e => "on" + e[0] in element, e => e[0] == "style" && typeof e[1] != "string", e => e[0] == "data",e => e[0] == "value", true)
+	var [,children,inner,events,styles,data,value,attributes] = sa1(contents, e=> ~["ele", "element"].indexOf(e[0]),e => ~["child", "children"].indexOf(e[0]), e => "inner" + e[0] in element, e => "on" + e[0] in element, e => e[0] == "style" && typeof e[1] != "string", e => e[0] == "data",e => e[0] == "value", true)
 	
 	
 
@@ -5024,7 +5135,7 @@ reduceObj = (j, i, k, l) => ([h, i] = i,
 	j[l.slice(0, k).map(m => `["${m[0]}"]`).join("") + (k ? "." : "") + h] = i,
 	j);
 function findObj(a, b, c = "\0", z = a, y = [window,document]) {
-	if (Object.prototype.toString.call(a).substr(8).match(/^CSS/) ||  ~y.indexOf(a))
+	if (findObj.caller == findObj && (Object.prototype.toString.call(a).substr(8).match(/^CSS/) ||  ~y.indexOf(a)))
 		return;
 	else
 		y.push(a)
@@ -5281,11 +5392,11 @@ parseCallback = (callbacks, ...objects) => {
 		// (callback && callback != 0 && callback != void 0)
 		if (typeof callback === "boolean") return callback 
 		o = 
-		notNull(Array.isArray(callback) && (typeof callback == "function" && notNull(tryCallback(callback.shift(),o,...callback)) ||  o[callback] == "function" && notNull(tryCallback(o[callback.shift()],...callback) )) ||
-		Object(o) === o && callback in o && notNull((typeof o[callback] == "function" ? tryCallback(o[callback]) : o[callback])) ||
+		notNull(Array.isArray(callback) && (typeof callback == "function" && (tryCallback(callback.shift(),o,...callback)) ||  o[callback] == "function" && (tryCallback(o[callback.shift()],...callback) )) ||
+		Object(o) === o && callback in o && notNull((typeof o[callback] == "function" ? notNull(tryCallback(o[callback])) : o[callback])) ||
 		~(toNum=nums.indexOf(callback)) && notNull(o * (toNum
 		 & 1 ? -1 : 1)) ||
-		typeof callback === "function" && notNull(tryCallback(callback, o)) ||
+		typeof callback === "function" && (tryCallback(callback, o)) ||
 		callbacks[i+1] && callback == "*" && notNull(findObj(o,callback[i+1])) ||
 		notNull(o))
 		
@@ -5376,6 +5487,16 @@ function download(datatype="text/plain", text="",filename="") {
 	element.click();
 }
 
+imap = (...e) => {
+	if (typeof e[0] == "function")
+	{
+		var reductor;
+		[reductor,...e] = e
+		if (e.length == 1) e = [].concat(...e)
+		return e.reduce(reductor,new insMap())
+	} else
+	return new insMap(...e)
+}
 
 insMap = class extends Map {
 
@@ -5394,6 +5515,34 @@ insMap = class extends Map {
 	}
 	set(k, ...v) {
 		return super.set(k, [].concat(this.get(k) || [], [...(this.ini ? v : v[0])]))
+	}
+
+	toObj(transmuter = null) {
+
+		var map = [...this]
+		if (!transmuter) return Object.toEntries(map)
+		var type;
+		if (typeof transmuter == "function")
+			type = 1
+		else if (Array.isArray(transmuter)) {
+			transmuter = Object.entries(transmuter);
+			type = 2
+		} else if (transmuter.__proto__ == {}.__proto__)
+			type = 2
+		else type = 3
+		return Object.fromEntries(map.map((i, j) => {
+			switch (type) {
+				case 1:
+					return [tryCallback(transmuter,i[0], y, i[1]), i[1]]
+					break;
+				case 2:
+					return [transmuter[i[0]], i[1]]
+					break;
+				case 3:
+					return [parseCallback(transmuter, i[0]), i[1]]
+			}
+		}))
+
 	}
 	//static init(v) {return Object(v[0]) === v[0] && this.ini in v[0] ? v[0][ini] : v}
 }
@@ -5428,3 +5577,5 @@ try {
 		})
 	if (!window.$j || ~Error().stack.split("\n")[1].search(/\?_=\d+/)) load()
 } finally {}
+
+
